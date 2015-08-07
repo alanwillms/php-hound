@@ -42,10 +42,6 @@ class PHPCodeSniffer extends AbstractIntegration
 
             $fileName = $fileTag['attributes']['name'];
 
-            if (!isset($files[$fileName])) {
-                $files[$fileName] = [];
-            }
-
             foreach (ArrayHelper::ensure($fileTag['value']) as $issueTag) {
                 $line = $issueTag['attributes']['line'];
                 $tool = 'PHPCodeSniffer';

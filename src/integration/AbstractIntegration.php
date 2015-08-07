@@ -11,13 +11,13 @@ abstract class AbstractIntegration
 {
     /**
      * Directory path to where the bin scripts are located.
-     * @var strind directory path.
+     * @var string directory path.
      */
     protected $binariesPath;
 
     /**
      * Temporary file wherein the output will be written
-     * @var strind temporary file path.
+     * @var string temporary file path.
      */
     protected $temporaryFilePath;
 
