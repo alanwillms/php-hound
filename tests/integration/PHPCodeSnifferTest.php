@@ -8,7 +8,7 @@ class PHPCodeSnifferTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->binariesPath = sys_get_temp_dir() . PATH_SEPARATOR;
+        $this->binariesPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR;
         $commands = ['phpcs', 'phpcpd', 'phpmd'];
         foreach ($commands as $command) {
             $commandPath = $this->binariesPath . $command;
