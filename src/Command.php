@@ -2,9 +2,6 @@
 namespace phphound;
 
 use League\CLImate\CLImate;
-use phphound\integration\PHPCodeSniffer;
-use phphound\integration\PHPCopyPasteDetector;
-use phphound\integration\PHPMessDetector;
 
 /**
  * Command line tool that run all script analyzers.
@@ -74,7 +71,8 @@ class Command
      */
     protected function runAllAnalysisTools()
     {
-        foreach ($this->getAnalysisToolsCommands() as $command) {
+        foreach ($this->getAnalysisToolsClasses() as $className) {
+            $command = new $className($this->binariesPath, sys_get_temp_dir());
             $result = $command->run($this->getAnalysedPath());
             $this->cli->output($result);
         }
@@ -117,15 +115,15 @@ class Command
     }
 
     /**
-     * List of PHP analys commands.
-     * @return array each command with its arguments.
+     * List of PHP analys integration classes.
+     * @return array array of class names.
      */
-    protected function getAnalysisToolsCommands()
+    protected function getAnalysisToolsClasses()
     {
         return [
-            new PHPCodeSniffer($this->binariesPath),
-            new PHPCopyPasteDetector($this->binariesPath),
-            new PHPMessDetector($this->binariesPath),
+            'phphound\integration\PHPCodeSniffer',
+            'phphound\integration\PHPCopyPasteDetector',
+            'phphound\integration\PHPMessDetector',
         ];
     }
 }

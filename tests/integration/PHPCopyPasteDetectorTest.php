@@ -19,10 +19,42 @@ class PHPCopyPasteDetectorTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_gets_command()
     {
-        $integration = new PHPCopyPasteDetector($this->binariesPath);
-        $this->assertEquals(
-            $this->binariesPath . 'phpcpd target.php',
+        $integration = new PHPCopyPasteDetector($this->binariesPath, $this->binariesPath);
+        $this->assertContains(
+            'phpcpd target.php',
             $integration->getCommand('target.php')
+        );
+    }
+
+    /** @test */
+    public function it_correctly_parses_xml_data()
+    {
+        $xml = <<<EOT
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd>
+  <invalid tag="here" />
+  <duplication lines="19" tokens="84">
+    <file path="ClassMirrorSpec.php" line="34"/>
+    <file path="ClassMirrorSpec.php" line="394"/>
+    <codefragment>duplicated code here</codefragment>
+  </duplication>
+</pmd-cpd>
+EOT;
+        $integration = $this->getMock(
+            'phphound\integration\PHPCopyPasteDetector',
+            ['getOutputContent'],
+            [$this->binariesPath, $this->binariesPath]
+        );
+        $integration->expects($this->any())->method('getOutputContent')->willReturn($xml);
+
+        $this->assertEquals(
+            json_encode([
+                'ClassMirrorSpec.php' => [
+                    34 => ['tool' => 'PHPCopyPasteDetector', 'type' => 'duplication', 'message' => 'Duplicated code'],
+                    394 => ['tool' => 'PHPCopyPasteDetector', 'type' => 'duplication', 'message' => 'Duplicated code'],
+                ],
+            ]),
+            $integration->run('target.php')
         );
     }
 }
