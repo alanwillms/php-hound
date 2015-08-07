@@ -1,6 +1,7 @@
 <?php
 namespace tests\integration;
 
+use phphound\AnalysisResult;
 use phphound\integration\PHPCodeSniffer;
 
 class PHPCodeSnifferTest extends \PHPUnit_Framework_TestCase
@@ -48,18 +49,20 @@ EOT;
             [$this->binariesPath, $this->binariesPath]
         );
         $integration->expects($this->any())->method('getOutputContent')->willReturn($xml);
+        $resultSet = new AnalysisResult;
+        $integration->run($resultSet, 'target.php');
 
         $this->assertEquals(
-            json_encode([
-                'User.php' => [
-                    75 => ['tool' => 'PHPCodeSniffer', 'type' => 'EndLine', 'message' => 'Whitespace found at end of line'],
-                    32 => ['tool' => 'PHPCodeSniffer', 'type' => 'TooLong', 'message' => 'Line exceeds 120 characters'],
-                ],
+            [
                 'Category.php' => [
-                    33 => ['tool' => 'PHPCodeSniffer', 'type' => 'TooLong', 'message' => 'Line exceeds 120 characters'],
+                    33 => [['tool' => 'PHPCodeSniffer', 'type' => 'TooLong', 'message' => 'Line exceeds 120 characters']],
+                ],
+                'User.php' => [
+                    32 => [['tool' => 'PHPCodeSniffer', 'type' => 'TooLong', 'message' => 'Line exceeds 120 characters']],
+                    75 => [['tool' => 'PHPCodeSniffer', 'type' => 'EndLine', 'message' => 'Whitespace found at end of line']],
                 ]
-            ]),
-            $integration->run('target.php')
+            ],
+            $resultSet->toArray()
         );
     }
 }

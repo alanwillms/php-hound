@@ -1,8 +1,9 @@
 <?php
 namespace phphound\integration;
 
-use Sabre\Xml\Reader;
+use phphound\AnalysisResult;
 use phphound\helper\ArrayHelper;
+use Sabre\Xml\Reader;
 
 /**
  * Integration of PHPHound with PHPCopyPasteDetector.
@@ -22,10 +23,9 @@ class PHPCopyPasteDetector extends AbstractIntegration
     /**
      * @inheritdoc
      */
-    protected function convertOutput(Reader $xml)
+    protected function convertOutput(Reader $xml, AnalysisResult $resultSet)
     {
         $xmlArray = $xml->parse();
-        $files = [];
 
         foreach (ArrayHelper::ensure($xmlArray['value']) as $duplicationTag) {
             if ($duplicationTag['name'] != '{}duplication'
@@ -40,24 +40,12 @@ class PHPCopyPasteDetector extends AbstractIntegration
 
                 $fileName = $fileTag['attributes']['path'];
                 $line = $fileTag['attributes']['line'];
+                $tool = 'PHPCopyPasteDetector';
+                $type = 'duplication';
                 $message = 'Duplicated code';
 
-                if (!isset($files[$fileName])) {
-                    $files[$fileName] = [];
-                }
-
-                if (!isset($files[$fileName][$line])) {
-                    $files[$fileName][$line] = [];
-                }
-
-                $files[$fileName][$line] = [
-                    'tool' => 'PHPCopyPasteDetector',
-                    'type' => 'duplication',
-                    'message' => 'Duplicated code',
-                ];
+                $resultSet->addIssue($fileName, $line, $tool, $type, $message);
             }
         }
-
-        return $files;
     }
 }

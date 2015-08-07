@@ -1,8 +1,9 @@
 <?php
 namespace phphound\integration;
 
-use Sabre\Xml\Reader;
+use phphound\AnalysisResult;
 use phphound\helper\ArrayHelper;
+use Sabre\Xml\Reader;
 
 /**
  * Integration of PHPHound with PHPCodeSniffer.
@@ -22,10 +23,9 @@ class PHPCodeSniffer extends AbstractIntegration
     /**
      * @inheritdoc
      */
-    protected function convertOutput(Reader $xml)
+    protected function convertOutput(Reader $xml, AnalysisResult $resultSet)
     {
         $xmlArray = $xml->parse();
-        $files = [];
 
         foreach (ArrayHelper::ensure($xmlArray['value']) as $fileTag) {
             if ($fileTag['name'] != '{}file') {
@@ -40,19 +40,12 @@ class PHPCodeSniffer extends AbstractIntegration
 
             foreach (ArrayHelper::ensure($fileTag['value']) as $issueTag) {
                 $line = $issueTag['attributes']['line'];
+                $tool = 'PHPCodeSniffer';
+                $type = $issueTag['attributes']['source'];
+                $message = $issueTag['value'];
 
-                if (!isset($files[$fileName][$line])) {
-                    $files[$fileName][$line] = [];
-                }
-
-                $files[$fileName][$line] = [
-                    'tool' => 'PHPCodeSniffer',
-                    'type' => $issueTag['attributes']['source'],
-                    'message' => $issueTag['value'],
-                ];
+                $resultSet->addIssue($fileName, $line, $tool, $type, $message);
             }
         }
-
-        return $files;
     }
 }

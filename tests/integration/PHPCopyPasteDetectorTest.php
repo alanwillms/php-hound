@@ -1,6 +1,7 @@
 <?php
 namespace tests\integration;
 
+use phphound\AnalysisResult;
 use phphound\integration\PHPCopyPasteDetector;
 
 class PHPCopyPasteDetectorTest extends \PHPUnit_Framework_TestCase
@@ -46,15 +47,17 @@ EOT;
             [$this->binariesPath, $this->binariesPath]
         );
         $integration->expects($this->any())->method('getOutputContent')->willReturn($xml);
+        $resultSet = new AnalysisResult;
+        $integration->run($resultSet, 'target.php');
 
         $this->assertEquals(
-            json_encode([
+            [
                 'ClassMirrorSpec.php' => [
-                    34 => ['tool' => 'PHPCopyPasteDetector', 'type' => 'duplication', 'message' => 'Duplicated code'],
-                    394 => ['tool' => 'PHPCopyPasteDetector', 'type' => 'duplication', 'message' => 'Duplicated code'],
+                    34 => [['tool' => 'PHPCopyPasteDetector', 'type' => 'duplication', 'message' => 'Duplicated code']],
+                    394 => [['tool' => 'PHPCopyPasteDetector', 'type' => 'duplication', 'message' => 'Duplicated code']],
                 ],
-            ]),
-            $integration->run('target.php')
+            ],
+            $resultSet->toArray()
         );
     }
 }

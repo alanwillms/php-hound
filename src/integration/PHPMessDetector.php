@@ -1,8 +1,9 @@
 <?php
 namespace phphound\integration;
 
-use Sabre\Xml\Reader;
+use phphound\AnalysisResult;
 use phphound\helper\ArrayHelper;
+use Sabre\Xml\Reader;
 
 /**
  * Integration of PHPHound with PHPMessDetector.
@@ -23,10 +24,9 @@ class PHPMessDetector extends AbstractIntegration
     /**
      * @inheritdoc
      */
-    protected function convertOutput(Reader $xml)
+    protected function convertOutput(Reader $xml, AnalysisResult $resultSet)
     {
         $xmlArray = $xml->parse();
-        $files = [];
 
         foreach (ArrayHelper::ensure($xmlArray['value']) as $fileTag) {
             if ($fileTag['name'] != '{}file') {
@@ -35,25 +35,14 @@ class PHPMessDetector extends AbstractIntegration
 
             $fileName = $fileTag['attributes']['name'];
 
-            if (!isset($files[$fileName])) {
-                $files[$fileName] = [];
-            }
-
             foreach (ArrayHelper::ensure($fileTag['value']) as $issueTag) {
                 $line = $issueTag['attributes']['beginline'];
+                $tool = 'PHPMessDetector';
+                $type = $issueTag['attributes']['rule'];
+                $message = $issueTag['value'];
 
-                if (!isset($files[$fileName][$line])) {
-                    $files[$fileName][$line] = [];
-                }
-
-                $files[$fileName][$line] = [
-                    'tool' => 'PHPMessDetector',
-                    'type' => $issueTag['attributes']['rule'],
-                    'message' => $issueTag['value'],
-                ];
+                $resultSet->addIssue($fileName, $line, $tool, $type, $message);
             }
         }
-
-        return $files;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace phphound\integration;
 
+use phphound\AnalysisResult;
 use Sabre\Xml\Reader;
 
 /**
@@ -36,10 +37,10 @@ abstract class AbstractIntegration
      * @param string $targetPath file/directory path to be analysed.
      * @return string CLI JSON output.
      */
-    public function run($targetPath)
+    public function run($resultSet, $targetPath)
     {
         $this->executeCommand($targetPath);
-        return json_encode($this->parseOutput());
+        $this->parseOutput($resultSet);
     }
 
     /**
@@ -57,7 +58,7 @@ abstract class AbstractIntegration
      * Convert tool output into PHP Hound array output.
      * @return array
      */
-    protected function parseOutput()
+    protected function parseOutput($resultSet)
     {
         $xml = new Reader;
         $content = $this->getOutputContent();
@@ -65,7 +66,7 @@ abstract class AbstractIntegration
             return [];
         }
         $xml->xml($content);
-        return $this->convertOutput($xml);
+        $this->convertOutput($xml, $resultSet);
     }
 
     /**
@@ -87,29 +88,8 @@ abstract class AbstractIntegration
     /**
      * Convert integration XML output to PHP Hound format.
      * @param Reader XML reader object.
-     * @return array PHP Hound output.
-     * <code>
-     * return [
-     *     "/path/to/file1.php" => [
-     *         1 => [
-     *             [
-     *                 'tool' => 'IntegrationName',
-     *                 'type' => 'integration.issue.type',
-     *                 'message' => 'Missing whitespace after argument.'
-     *             ]
-     *         ]
-     *     ],
-     *     "/path/to/file2.php" => [
-     *         36 => [
-     *             [
-     *                 'tool' => 'IntegrationName',
-     *                 'type' => 'integration.issue.type',
-     *                 'message' => 'Missing whitespace after argument.'
-     *             ]
-     *         ]
-     *     ],
-     * ];
-     * </code>
+     * @param AnalysisResult result object.
+     * @return void
      */
-    abstract protected function convertOutput(Reader $xml);
+    abstract protected function convertOutput(Reader $xml, AnalysisResult $resultSet);
 }

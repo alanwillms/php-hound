@@ -71,11 +71,12 @@ class Command
      */
     protected function runAllAnalysisTools()
     {
+        $resultSet = new AnalysisResult;
         foreach ($this->getAnalysisToolsClasses() as $className) {
             $command = new $className($this->binariesPath, sys_get_temp_dir());
-            $result = $command->run($this->getAnalysedPath());
-            $this->cli->output($result);
+            $command->run($resultSet, $this->getAnalysedPath());
         }
+        print_r($resultSet->toArray());
     }
 
     /**

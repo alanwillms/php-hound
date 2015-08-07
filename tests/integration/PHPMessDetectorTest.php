@@ -1,6 +1,7 @@
 <?php
 namespace tests\integration;
 
+use phphound\AnalysisResult;
 use phphound\integration\PHPMessDetector;
 
 class PHPMessDetectorTest extends \PHPUnit_Framework_TestCase
@@ -48,18 +49,20 @@ EOT;
             [$this->binariesPath, $this->binariesPath]
         );
         $integration->expects($this->any())->method('getOutputContent')->willReturn($xml);
+        $resultSet = new AnalysisResult;
+        $integration->run($resultSet, 'target.php');
 
         $this->assertEquals(
-            json_encode([
+            [
                 'LoginAttempt.php' => [
-                    31 => ['tool' => 'PHPMessDetector', 'type' => 'StaticAccess', 'message' => 'Avoid using static access to class self'],
-                    44 => ['tool' => 'PHPMessDetector', 'type' => 'ShortVariable', 'message' => 'Avoid variables with short names'],
+                    31 => [['tool' => 'PHPMessDetector', 'type' => 'StaticAccess', 'message' => 'Avoid using static access to class self']],
+                    44 => [['tool' => 'PHPMessDetector', 'type' => 'ShortVariable', 'message' => 'Avoid variables with short names']],
                 ],
                 'PermalinksController.php' => [
-                    10 => ['tool' => 'PHPMessDetector', 'type' => 'ShortVariable', 'message' => 'Avoid variables with short names'],
+                    10 => [['tool' => 'PHPMessDetector', 'type' => 'ShortVariable', 'message' => 'Avoid variables with short names']],
                 ]
-            ]),
-            $integration->run('target.php')
+            ],
+            $resultSet->toArray()
         );
     }
 }
