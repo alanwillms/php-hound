@@ -1,5 +1,7 @@
 #!/bin/bash
 
-phpcs -p --extensions=php --standard=PSR2 $1
-phpcpd --exclude=vendor $1
-phpmd $1 text cleancode,codesize,controversial,design,naming,unusedcode
+PHPHOUND_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+$PHPHOUND_DIR/phpcs -p --extensions=php --standard=PSR2 $1
+$PHPHOUND_DIR/phpcpd --exclude=vendor $1
+$PHPHOUND_DIR/phpmd $1 text cleancode,codesize,controversial,design,naming,unusedcode
