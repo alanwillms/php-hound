@@ -1,7 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env php
+<?php
+$composerAutoload = [
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+];
+$vendorPath = $binariesPath = null;
+foreach ($composerAutoload as $autoload) {
+    if (file_exists($autoload)) {
+        require($autoload);
+        $vendorPath = dirname($autoload);
+        $binariesPath = $vendorPath . '/bin/';
+        break;
+    }
+}
 
-PHPHOUND_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-
-$PHPHOUND_DIR/phpcs -p --extensions=php --standard=PSR2 $1
-$PHPHOUND_DIR/phpcpd --exclude=vendor $1
-$PHPHOUND_DIR/phpmd $1 text cleancode,codesize,controversial,design,naming,unusedcode
+$cliMate = new \League\CLImate\CLImate;
+$hound = new \phphound\Command($cliMate, $binariesPath, $_SERVER['argv']);
+$hound->run();
