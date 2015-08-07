@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo 'Running PHPCS...'
+phpcs -p --extensions=php --standard=all .
+
+# echo 'Running PHPCPD...'
+# ./vendor/bin/phpcpd --exclude=vendor .
+
+# echo 'Running PHPMD...'
+# ./vendor/bin/phpmd . text cleancode,codesize,controversial,design,naming,unusedcode
