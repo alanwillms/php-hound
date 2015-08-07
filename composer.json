@@ -9,7 +9,9 @@
         }
     ],
     "require": {
-        "squizlabs/php_codesniffer": "2.*"
+        "squizlabs/php_codesniffer": "2.*",
+        "sebastian/phpcpd": "2.*",
+        "phpmd/phpmd": "2.2.*"
     },
     "bin": ["bin/php-hound"]
 }
