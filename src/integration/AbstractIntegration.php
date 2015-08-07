@@ -24,12 +24,12 @@ abstract class AbstractIntegration
     /**
      * Stores binaries path.
      * @param string $binariesPath where the bin scripts are located.
-     * @param string $temporaryDirectoryPath where temporary files will be created.
+     * @param string $temporaryDirPath where temporary files will be created.
      */
-    public function __construct($binariesPath, $temporaryDirectoryPath)
+    public function __construct($binariesPath, $temporaryDirPath)
     {
         $this->binariesPath = $binariesPath;
-        $this->temporaryFilePath = tempnam($temporaryDirectoryPath, 'PHP-Hound');
+        $this->temporaryFilePath = tempnam($temporaryDirPath, 'PHP-Hound');
     }
 
     /**
@@ -77,6 +77,12 @@ abstract class AbstractIntegration
     {
         return file_get_contents($this->temporaryFilePath);
     }
+
+    /**
+     * Integration description.
+     * @return string description.
+     */
+    abstract public function getDescription();
 
     /**
      * Create integration command to be run on the shell.

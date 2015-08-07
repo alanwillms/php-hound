@@ -14,6 +14,14 @@ class PHPMessDetector extends AbstractIntegration
     /**
      * @inheritdoc
      */
+    public function getDescription()
+    {
+        return 'PHPMessDetector';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getCommand($targetPath)
     {
         return $this->binariesPath . 'phpmd ' . $targetPath . ' xml cleancode,'

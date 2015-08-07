@@ -2,12 +2,18 @@
 namespace phphound;
 
 use League\CLImate\CLImate;
+use phphound\output\TextOutput;
 
 /**
  * Command line tool that run all script analyzers.
  */
 class Command
 {
+    const EVENT_STARTING_ANALYSIS = 0;
+    const EVENT_STARTING_TOOL = 1;
+    const EVENT_FINISHED_TOOL = 2;
+    const EVENT_FINISHED_ANALYSIS = 3;
+
     /**
      * Composer binaries path.
      * @var string directory path.
@@ -19,6 +25,12 @@ class Command
      * @var CLImate CLImate instance.
      */
     protected $cli;
+
+    /**
+     * Output service.
+     * @var TextOutput TextOutput instance.
+     */
+    protected $output;
 
     /**
      * Command line arguments.
@@ -38,7 +50,8 @@ class Command
         $this->binariesPath = $binariesPath;
         $this->arguments = $arguments;
 
-        $this->initialize();
+        $this->initializeCLI();
+        $this->initializeOutput();
     }
 
     /**
@@ -58,11 +71,20 @@ class Command
      * Initialize CLI tool.
      * @return void
      */
-    protected function initialize()
+    protected function initializeCLI()
     {
         $this->cli->description($this->getDescription());
         $this->cli->arguments->add($this->getArguments());
         $this->cli->arguments->parse($this->arguments);
+    }
+
+    /**
+     * Initialize output.
+     * @return void
+     */
+    protected function initializeOutput()
+    {
+        $this->output = new TextOutput($this->cli);
     }
 
     /**
@@ -71,12 +93,16 @@ class Command
      */
     protected function runAllAnalysisTools()
     {
+        $this->output->trigger(self::EVENT_STARTING_ANALYSIS);
         $resultSet = new AnalysisResult;
         foreach ($this->getAnalysisToolsClasses() as $className) {
             $command = new $className($this->binariesPath, sys_get_temp_dir());
+            $this->output->trigger(self::EVENT_STARTING_TOOL, $command->getDescription());
             $command->run($resultSet, $this->getAnalysedPath());
+            $this->output->trigger(self::EVENT_FINISHED_TOOL);
         }
-        print_r($resultSet->toArray());
+        $this->output->result($resultSet);
+        $this->output->trigger(self::EVENT_FINISHED_ANALYSIS);
     }
 
     /**

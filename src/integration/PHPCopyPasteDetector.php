@@ -14,6 +14,14 @@ class PHPCopyPasteDetector extends AbstractIntegration
     /**
      * @inheritdoc
      */
+    public function getDescription()
+    {
+        return 'PHPCopyPasteDetector';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getCommand($targetPath)
     {
         return $this->binariesPath . 'phpcpd '. $targetPath . ' --log-pmd="'

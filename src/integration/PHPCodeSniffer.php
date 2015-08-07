@@ -14,6 +14,14 @@ class PHPCodeSniffer extends AbstractIntegration
     /**
      * @inheritdoc
      */
+    public function getDescription()
+    {
+        return 'PHPCodeSniffer';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getCommand($targetPath)
     {
         return $this->binariesPath . 'phpcs -p --standard=PSR2 --report=xml '
