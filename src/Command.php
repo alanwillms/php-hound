@@ -2,6 +2,9 @@
 namespace phphound;
 
 use League\CLImate\CLImate;
+use phphound\integration\PHPCodeSniffer;
+use phphound\integration\PHPCopyPasteDetector;
+use phphound\integration\PHPMessDetector;
 
 /**
  * Command line tool that run all script analyzers.
@@ -72,19 +75,9 @@ class Command
     protected function runAllAnalysisTools()
     {
         foreach ($this->getAnalysisToolsCommands() as $command) {
-            $this->runShellCommand($command);
+            $result = $command->run($this->getAnalysedPath());
+            $this->cli->output($result);
         }
-    }
-
-    /**
-     * Run a shell command inside binaries path.
-     * @param string $command shell command.
-     * @return void
-     */
-    protected function runShellCommand($command)
-    {
-        $result = shell_exec($this->binariesPath . $command);
-        $this->cli->output($result);
     }
 
     /**
@@ -129,11 +122,10 @@ class Command
      */
     protected function getAnalysisToolsCommands()
     {
-        $path = $this->getAnalysedPath();
         return [
-            'phpcs -p --extensions=php --standard=PSR2 ' . $path,
-            'phpcpd --exclude=vendor ' . $path,
-            'phpmd ' . $path . ' text cleancode,codesize,controversial,design,naming,unusedcode',
+            new PHPCodeSniffer($this->binariesPath),
+            new PHPCopyPasteDetector($this->binariesPath),
+            new PHPMessDetector($this->binariesPath),
         ];
     }
 }

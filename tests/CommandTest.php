@@ -1,9 +1,10 @@
 <?php
+namespace tests;
+
 use phphound\Command;
 
-class CommandTest extends PHPUnit_Framework_TestCase
+class CommandTest extends \PHPUnit_Framework_TestCase
 {
-
     public function setUp()
     {
         $this->binariesPath = sys_get_temp_dir() . PATH_SEPARATOR;
