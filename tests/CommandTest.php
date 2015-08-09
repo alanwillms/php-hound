@@ -17,7 +17,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_prints_usage_when_get_help_argument()
+    public function it_prints_usage_instructions_when_receives_help_argument()
     {
         $arguments = ['php-hound', '--help'];
 
@@ -25,6 +25,27 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $cli->expects($this->once())->method('usage');
 
         $command = new Command($cli, $this->binariesPath, $arguments);
+        $command->run();
+    }
+
+    /** @test */
+    public function it_prints_version_info_when_receives_version_argument()
+    {
+        $arguments = ['php-hound', '--version'];
+
+        $cli = $this->getMock(
+            'League\CLImate\CLImate',
+            ['out']
+        );
+        $cli->expects($this->once())->method('out')->with('PHP Hound 1.2.3');
+
+        $command = $this->getMock(
+            'phphound\Command',
+            ['getDescription'],
+            [$cli, $this->binariesPath, $arguments]
+        );
+        $command->expects($this->once())->method('getDescription')->willReturn('PHP Hound 1.2.3');
+
         $command->run();
     }
 
