@@ -1,7 +1,9 @@
 # PHP Hound
 
 [![Build Status](https://travis-ci.org/alanwillms/php-hound.svg?branch=master)](https://travis-ci.org/alanwillms/php-hound)
+[![Code Climate](https://codeclimate.com/github/alanwillms/php-hound/badges/gpa.svg)](https://codeclimate.com/github/alanwillms/php-hound)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/alanwillms/php-hound/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/alanwillms/php-hound/?branch=master)
+[![Test Coverage](https://codeclimate.com/github/alanwillms/php-hound/badges/coverage.svg)](https://codeclimate.com/github/alanwillms/php-hound/coverage)
 [![Packagist Version](https://img.shields.io/packagist/v/alanwillms/php-hound.svg)](https://packagist.org/packages/alanwillms/php-hound)
 [![Total Downloads](https://img.shields.io/packagist/dt/alanwillms/php-hound.svg)](https://packagist.org/packages/alanwillms/php-hound)
 
