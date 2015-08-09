@@ -22,10 +22,22 @@ class PHPMessDetector extends AbstractIntegration
     /**
      * @inheritdoc
      */
+    public function getIgnoredArgument()
+    {
+        if ($this->ignoredPaths) {
+            return '--exclude ' . implode(',', $this->ignoredPaths) . ' ';
+        }
+        return '';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getCommand($targetPath)
     {
-        return $this->binariesPath . 'phpmd ' . $targetPath . ' xml cleancode,'
-            . 'codesize,controversial,design,naming,unusedcode > "'
+        return $this->binariesPath . 'phpmd ' . $targetPath . ' '
+            . 'xml cleancode,codesize,controversial,design,naming,unusedcode '
+            . $this->getIgnoredArgument() . '> "'
             . $this->temporaryFilePath . '"';
     }
 

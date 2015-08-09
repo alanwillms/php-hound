@@ -16,7 +16,7 @@ It currently supports:
 * [PHPCopyPasteDetector](https://github.com/sebastianbergmann/phpcpd)
 * [PHPMessDetector](https://github.com/phpmd/phpmd)
 
-# Installation
+## Installation
 
 This tool requires [Composer](https://getcomposer.org). If you have it, you can
 install PHP Hound running:
@@ -28,9 +28,25 @@ composer global require alanwillms/php-hound
 It's **important** that you make sure `~/.composer/bin` directory is in your
 `PATH`.
 
-# Command line usage
+## Command line usage
+
+You can run `php-hound --help` to display a list of available options.
+
+Basic usage:
 
 ```bash
-php-hound /some/directory # run for specific directory
-php-hound /some/file.php # run for specific file
+php-hound directory/ # run for specific directory
+php-hound path/to/file.php # run for specific file
+```
+
+Available options:
+
+```
+php-hound [optional arguments] [path to be analysed]
+
+Optional Arguments:
+    --help
+        Prints a usage statement
+    -i <directory>, --ignore <directory>
+        Ignore a comma-separated list of directories. "vendor", "tests", "features" and "spec", will be ignored by default.
 ```

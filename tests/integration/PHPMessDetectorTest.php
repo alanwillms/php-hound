@@ -28,6 +28,17 @@ class PHPMessDetectorTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_respects_ignore_param()
+    {
+        $integration = new PHPMessDetector($this->binariesPath, $this->binariesPath);
+        $integration->setIgnoredPaths(['dir1', 'dir2']);
+        $this->assertContains(
+            '--exclude dir1,dir2',
+            $integration->getCommand('target.php')
+        );
+    }
+
+    /** @test */
     public function it_correctly_parses_xml_data()
     {
         $xml = <<<EOT

@@ -22,6 +22,12 @@ abstract class AbstractIntegration
     protected $temporaryFilePath;
 
     /**
+     * Paths to be ignored during runtime.
+     * @var array target file or directory paths to be ignored.
+     */
+    protected $ignoredPaths;
+
+    /**
      * Stores binaries path.
      * @param string $binariesPath where the bin scripts are located.
      * @param string $temporaryDirPath where temporary files will be created.
@@ -30,6 +36,17 @@ abstract class AbstractIntegration
     {
         $this->binariesPath = $binariesPath;
         $this->temporaryFilePath = tempnam($temporaryDirPath, 'PHP-Hound');
+        $this->ignoredPaths = [];
+    }
+
+    /**
+     * Ignore informed targets during execution.
+     * @param array $targets target file or directory paths to be ignored.
+     * @return void
+     */
+    public function setIgnoredPaths(array $targets)
+    {
+        $this->ignoredPaths = $targets;
     }
 
     /**

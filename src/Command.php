@@ -97,6 +97,7 @@ class Command
         $resultSet = new AnalysisResult;
         foreach ($this->getAnalysisToolsClasses() as $className) {
             $command = new $className($this->binariesPath, sys_get_temp_dir());
+            $command->setIgnoredPaths($this->getIgnoredPaths());
             $this->output->trigger(self::EVENT_STARTING_TOOL, $command->getDescription());
             $command->run($resultSet, $this->getAnalysedPath());
             $this->output->trigger(self::EVENT_FINISHED_TOOL);
@@ -126,10 +127,28 @@ class Command
                 'description' => 'Prints a usage statement',
                 'noValue' => true,
             ],
+            'ignore' => [
+                'prefix' => 'i',
+                'longPrefix' => 'ignore',
+                'description' => 'Ignore a comma-separated list of directories',
+                'castTo' => 'string',
+                'defaultValue' => 'vendor,tests,features,spec',
+            ],
             'path' => [
                 'description' => 'File or directory path to analyze',
             ],
         ];
+    }
+
+    /**
+     * Get a list of paths to be ignored by the analysis.
+     * @return array a list of file and/or directory paths.
+     */
+    public function getIgnoredPaths()
+    {
+        $ignoredArgument = $this->cli->arguments->get('ignore', $this->arguments);
+        $ignoredPaths = explode(',', $ignoredArgument);
+        return array_filter($ignoredPaths);
     }
 
     /**
@@ -138,7 +157,7 @@ class Command
      */
     protected function getAnalysedPath()
     {
-        return $this->cli->arguments->get('path');
+        return $this->cli->arguments->get('path', $this->arguments);
     }
 
     /**
