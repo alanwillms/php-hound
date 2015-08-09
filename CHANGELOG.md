@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 ### Added
+- Add `--ignore` / `-i` argument to display current version
 - Add code coverage and Code Climate badges
 - Add change log
 - Add `--ignore` / `-i` argument to exclude directories from the analysis
