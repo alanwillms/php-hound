@@ -38,6 +38,24 @@ class CommandTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_accepts_target_path()
+    {
+        $cli = $this->getMock('League\CLImate\CLImate', ['output']);
+        $arguments = ['php-hound', 'target/path'];
+        $command = new Command($cli, $this->binariesPath, $arguments);
+        $this->assertEquals('target/path', $command->getAnalysedPath());
+    }
+
+    /** @test */
+    public function it_uses_current_dir_as_target_path_when_not_informed()
+    {
+        $cli = $this->getMock('League\CLImate\CLImate', ['output']);
+        $arguments = ['php-hound'];
+        $command = new Command($cli, $this->binariesPath, $arguments);
+        $this->assertEquals('.', $command->getAnalysedPath());
+    }
+
+    /** @test */
     public function it_accepts_ignore_param()
     {
         $cli = $this->getMock('League\CLImate\CLImate', ['output']);
