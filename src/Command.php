@@ -112,7 +112,16 @@ class Command
      */
     protected function getDescription()
     {
-        return 'PHP Hound 0.1';
+        return 'PHP Hound ' . $this->getVersion();
+    }
+
+    /**
+     * Current PHP Hound version.
+     * @return string semantic version.
+     */
+    protected function getVersion()
+    {
+        return '0.4.0';
     }
 
     /**
