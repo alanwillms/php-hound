@@ -36,4 +36,44 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $command = new Command($cli, $this->binariesPath, $arguments);
         $command->run();
     }
+
+    /** @test */
+    public function it_accepts_ignore_param()
+    {
+        $cli = $this->getMock('League\CLImate\CLImate', ['output']);
+        $arguments = ['php-hound', '--ignore=dir'];
+
+        $command = new Command($cli, $this->binariesPath, $arguments);
+        $this->assertEquals(['dir'], $command->getIgnoredPaths());
+    }
+
+    /** @test */
+    public function it_accepts_ignore_param_with_multiple_directories()
+    {
+        $cli = $this->getMock('League\CLImate\CLImate', ['output']);
+        $arguments = ['php-hound', '--ignore=dir1,dir2'];
+
+        $command = new Command($cli, $this->binariesPath, $arguments);
+        $this->assertEquals(['dir1', 'dir2'], $command->getIgnoredPaths());
+    }
+
+    /** @test */
+    public function it_has_ignore_param_default()
+    {
+        $cli = $this->getMock('League\CLImate\CLImate', ['output']);
+        $arguments = ['php-hound'];
+
+        $command = new Command($cli, $this->binariesPath, $arguments);
+        $this->assertEquals(['vendor', 'tests', 'features', 'spec'], $command->getIgnoredPaths());
+    }
+
+    /** @test */
+    public function it_accepts_ignore_param_with_empty_value()
+    {
+        $cli = $this->getMock('League\CLImate\CLImate', ['output']);
+        $arguments = ['php-hound', '--ignore='];
+
+        $command = new Command($cli, $this->binariesPath, $arguments);
+        $this->assertEquals([], $command->getIgnoredPaths());
+    }
 }

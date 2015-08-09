@@ -22,10 +22,22 @@ class PHPCodeSniffer extends AbstractIntegration
     /**
      * @inheritdoc
      */
+    public function getIgnoredArgument()
+    {
+        if ($this->ignoredPaths) {
+            return '--ignore=' . implode(',', $this->ignoredPaths) . ' ';
+        }
+        return '';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getCommand($targetPath)
     {
         return $this->binariesPath . 'phpcs -p --standard=PSR2 --report=xml '
-            . '--report-file="' . $this->temporaryFilePath . '" '. $targetPath;
+            . $this->getIgnoredArgument() . '--report-file="'
+            . $this->temporaryFilePath . '" '. $targetPath;
     }
 
     /**

@@ -22,9 +22,21 @@ class PHPCopyPasteDetector extends AbstractIntegration
     /**
      * @inheritdoc
      */
+    public function getIgnoredArgument()
+    {
+        if ($this->ignoredPaths) {
+            return '--exclude={' . implode(',', $this->ignoredPaths) . '} ';
+        }
+        return '';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getCommand($targetPath)
     {
-        return $this->binariesPath . 'phpcpd '. $targetPath . ' --log-pmd="'
+        return $this->binariesPath . 'phpcpd ' . $targetPath . ' '
+            . $this->getIgnoredArgument() . '--log-pmd="'
             . $this->temporaryFilePath . '"';
     }
 
