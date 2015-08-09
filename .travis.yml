@@ -9,9 +9,12 @@ install:
   - composer self-update
   - composer install
 
+addons:
+  code_climate:
+    repo_token: 69b2259a3bcefb95a85ea91486d79e1f13a90b6381a1b1c0c5b7984bbcd867dd
+
 script:
-  - vendor/bin/phpunit --coverage-clover=coverage.clover
+  - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
 after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  - vendor/bin/test-reporter

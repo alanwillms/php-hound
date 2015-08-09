@@ -4,6 +4,6 @@ languages:
   PHP: true
   Python: false
 exclude_paths:
- - "bin/"
- - "tests/"
- - "vendor/"
+ - "bin/*"
+ - "tests/*"
+ - "vendor/*"
