@@ -14,41 +14,74 @@ a single beautiful report.
 
 It currently supports:
 
-* [PHPCodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)
-* [PHPCopyPasteDetector](https://github.com/sebastianbergmann/phpcpd)
-* [PHPMessDetector](https://github.com/phpmd/phpmd)
+* [PHPCodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer): code style and
+  identation according to [PSR-2](http://www.php-fig.org/psr/psr-2/).
+* [PHPCopyPasteDetector](https://github.com/sebastianbergmann/phpcpd):
+  duplicated code detection.
+* [PHPMessDetector](https://github.com/phpmd/phpmd): checks for complex, unused,
+  broken or unclear code.
 
 ## Installation
 
-This tool requires [Composer](https://getcomposer.org). If you have it, you can
-install PHP Hound running:
+PHP Hound can be installed through [Composer](https://getcomposer.org).
+
+### Local installation
+
+To install it locally, run the following command:
+
+```bash
+composer require alanwillms/php-hound
+```
+
+Then you can execute PHP Hound by running `./vendor/bin/php-hound`.
+
+### Global installation
+
+You can install PHP Hound globally with:
 
 ```bash
 composer global require alanwillms/php-hound
 ```
 
-It's **important** that you make sure `~/.composer/bin` directory is in your
-`PATH`.
+Then you can add `~/.composer/bin` directory to your `PATH`, so you can
+simply type `php-hound` to run it from anywhere. If you want to do this,
+add the following to your `~/.profile` (or `~/.bashrc`) file:
+
+```bash
+export PATH="$HOME/.composer/vendor/bin:$PATH"
+```
+
+If you want to apply the changes to your current terminal session, run
+`source ~/.profile` (or `source ~/bashrc`).
 
 ## Command line usage
-
-You can run `php-hound --help` to display a list of available options.
-
 Basic usage:
 
 ```bash
-php-hound directory/ # run for specific directory
-php-hound path/to/file.php # run for specific file
+# Analyze current directory files
+php-hound
+
+# Analyze "informed/directory/" files
+php-hound informed/directory/
+
+# Analyze "script.php" file
+php-hound script.php
 ```
 
-Available options:
+You can run `php-hound --help` to display a list of all available options.
 
 ```
 php-hound [optional arguments] [path to be analysed]
 
 Optional Arguments:
+
     --help
         Prints a usage statement
+
     -i <directory>, --ignore <directory>
-        Ignore a comma-separated list of directories. "vendor", "tests", "features" and "spec", will be ignored by default.
+        Ignore a comma-separated list of directories. Directories called
+        "vendor", "tests", "features" and "spec", will be ignored by default.
+
+    -v, --version
+        Prints installed version
 ```
