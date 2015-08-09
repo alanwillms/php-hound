@@ -136,6 +136,7 @@ class Command
             ],
             'path' => [
                 'description' => 'File or directory path to analyze',
+                'defaultValue' => '.',
             ],
         ];
     }
@@ -155,7 +156,7 @@ class Command
      * Analysis target path.
      * @return string target path.
      */
-    protected function getAnalysedPath()
+    public function getAnalysedPath()
     {
         return $this->cli->arguments->get('path', $this->arguments);
     }
