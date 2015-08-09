@@ -64,6 +64,12 @@ class Command
             $this->cli->usage();
             return null;
         }
+
+        if ($this->cli->arguments->defined('version', $this->arguments)) {
+            $this->cli->out($this->getDescription());
+            return null;
+        }
+
         $this->runAllAnalysisTools();
     }
 
@@ -134,6 +140,12 @@ class Command
             'help' => [
                 'longPrefix' => 'help',
                 'description' => 'Prints a usage statement',
+                'noValue' => true,
+            ],
+            'version' => [
+                'prefix' => 'v',
+                'longPrefix' => 'version',
+                'description' => 'Prints installed version',
                 'noValue' => true,
             ],
             'ignore' => [
