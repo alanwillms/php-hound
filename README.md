@@ -78,6 +78,9 @@ Optional Arguments:
     --help
         Prints a usage statement
 
+    -f format, --format format (default: text)
+        Output format. Accepts "text", "json", "csv" and "xml" formats.
+
     -i <directory>, --ignore <directory>
         Ignore a comma-separated list of directories. Directories called
         "vendor", "tests", "features" and "spec", will be ignored by default.

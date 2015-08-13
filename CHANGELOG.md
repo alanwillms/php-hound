@@ -4,10 +4,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 ### Added
+- Add `json`, `xml` and `csv` output formats
+- Add `--format` / `-f` argument to change output format
 - Add `--version` / `-v` argument to display current version
+- Add `--ignore` / `-i` argument to exclude directories from the analysis
 - Add code coverage and Code Climate badges
 - Add change log
-- Add `--ignore` / `-i` argument to exclude directories from the analysis
 
 ### Fixed
 - If no target path is informed, use `.`

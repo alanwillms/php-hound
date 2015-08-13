@@ -1,8 +1,8 @@
 <?php
 namespace phphound;
 
+use UnexpectedValueException;
 use League\CLImate\CLImate;
-use phphound\output\TextOutput;
 
 /**
  * Command line tool that run all script analyzers.
@@ -86,11 +86,23 @@ class Command
 
     /**
      * Initialize output.
+     * @throws UnexpectedValueException on invalid format value.
      * @return void
      */
     protected function initializeOutput()
     {
-        $this->output = new TextOutput($this->cli);
+        $format = $this->getOutputFormat();
+        $formatClasses = $this->getOutputFormatClasses();
+
+        if (!isset($formatClasses[$format])) {
+            throw new UnexpectedValueException(
+                'Invalid format: "' . $format . '"'
+            );
+        }
+
+        $outputClassName = $formatClasses[$format];
+
+        $this->output = new $outputClassName($this->cli);
     }
 
     /**
@@ -155,6 +167,13 @@ class Command
                 'castTo' => 'string',
                 'defaultValue' => 'vendor,tests,features,spec',
             ],
+            'format' => [
+                'prefix' => 'f',
+                'longPrefix' => 'format',
+                'description' => 'Output format',
+                'castTo' => 'string',
+                'defaultValue' => 'text',
+            ],
             'path' => [
                 'description' => 'File or directory path to analyze',
                 'defaultValue' => '.',
@@ -183,6 +202,15 @@ class Command
     }
 
     /**
+     * Output format.
+     * @return string format type.
+     */
+    public function getOutputFormat()
+    {
+        return $this->cli->arguments->get('format', $this->arguments);
+    }
+
+    /**
      * List of PHP analys integration classes.
      * @return array array of class names.
      */
@@ -192,6 +220,20 @@ class Command
             'phphound\integration\PHPCodeSniffer',
             'phphound\integration\PHPCopyPasteDetector',
             'phphound\integration\PHPMessDetector',
+        ];
+    }
+
+    /**
+     * List of output format classes.
+     * @return array array where the key is a format and its value the class.
+     */
+    protected function getOutputFormatClasses()
+    {
+        return [
+            'text' => 'phphound\output\TextOutput',
+            'json' => 'phphound\output\JsonOutput',
+            'xml' => 'phphound\output\XmlOutput',
+            'csv' => 'phphound\output\CsvOutput',
         ];
     }
 }
