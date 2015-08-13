@@ -30,6 +30,18 @@ class CommandTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_prints_usage_instructions_when_receives_h_argument()
+    {
+        $arguments = ['php-hound', '-h'];
+
+        $cli = $this->getMock('League\CLImate\CLImate', ['usage']);
+        $cli->expects($this->once())->method('usage');
+
+        $command = new Command($cli, $this->binariesPath, $arguments);
+        $command->run();
+    }
+
+    /** @test */
     public function it_prints_version_info_when_receives_version_argument()
     {
         $arguments = ['php-hound', '--version'];

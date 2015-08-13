@@ -150,6 +150,7 @@ class Command
     {
         return [
             'help' => [
+                'prefix' => 'h',
                 'longPrefix' => 'help',
                 'description' => 'Prints a usage statement',
                 'noValue' => true,
