@@ -1,6 +1,7 @@
 <?php
 namespace tests;
 
+use League\CLImate\CLImate;
 use phphound\Command;
 
 class CommandTest extends \PHPUnit_Framework_TestCase
@@ -114,5 +115,34 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 
         $command = new Command($cli, $this->binariesPath, $arguments);
         $this->assertEquals([], $command->getIgnoredPaths());
+    }
+
+    /** @test */
+    public function it_does_not_accept_invalid_format_value()
+    {
+        $this->setExpectedException('UnexpectedValueException');
+        $arguments = ['php-hound', '--format=invalid'];
+        $cli = new CLImate;
+        $command = new Command($cli, $this->binariesPath, $arguments);
+    }
+
+    /** @test */
+    public function it_uses_json_output_with_format_json_param()
+    {
+        $arguments = ['php-hound', '--format=json'];
+        $cli = new CLImate;
+        $command = new Command($cli, $this->binariesPath, $arguments);
+
+        $this->assertInstanceOf('phphound\output\JsonOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
+    }
+
+    /** @test */
+    public function it_uses_json_output_with_f_json_param()
+    {
+        $arguments = ['php-hound', '-f=json'];
+        $cli = new CLImate;
+        $command = new Command($cli, $this->binariesPath, $arguments);
+
+        $this->assertInstanceOf('phphound\output\JsonOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
     }
 }
