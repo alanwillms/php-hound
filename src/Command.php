@@ -233,6 +233,7 @@ class Command
             'text' => 'phphound\output\TextOutput',
             'json' => 'phphound\output\JsonOutput',
             'xml' => 'phphound\output\XmlOutput',
+            'csv' => 'phphound\output\CsvOutput',
         ];
     }
 }
