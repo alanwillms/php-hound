@@ -145,4 +145,24 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('phphound\output\JsonOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
     }
+
+    /** @test */
+    public function it_uses_xml_output_with_format_xml_param()
+    {
+        $arguments = ['php-hound', '--format=xml'];
+        $cli = new CLImate;
+        $command = new Command($cli, $this->binariesPath, $arguments);
+
+        $this->assertInstanceOf('phphound\output\XmlOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
+    }
+
+    /** @test */
+    public function it_uses_xml_output_with_f_xml_param()
+    {
+        $arguments = ['php-hound', '-f=xml'];
+        $cli = new CLImate;
+        $command = new Command($cli, $this->binariesPath, $arguments);
+
+        $this->assertInstanceOf('phphound\output\XmlOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
+    }
 }

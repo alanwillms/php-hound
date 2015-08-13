@@ -232,6 +232,7 @@ class Command
         return [
             'text' => 'phphound\output\TextOutput',
             'json' => 'phphound\output\JsonOutput',
+            'xml' => 'phphound\output\XmlOutput',
         ];
     }
 }
