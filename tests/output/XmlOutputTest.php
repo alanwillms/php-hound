@@ -24,7 +24,7 @@ class XmlOutputTest extends \PHPUnit_Framework_TestCase
             ->getMock()
         ;
         $result = $this->getMock('phphound\AnalysisResult');
-        $output = new XmlOutput($cli);
+        $output = new XmlOutput($cli, sys_get_temp_dir());
 
         $result->expects($this->once())->method('toArray')->willReturn($data);
         $cli->expects($this->once())->method('out')->with($xml);
@@ -37,7 +37,7 @@ class XmlOutputTest extends \PHPUnit_Framework_TestCase
     {
         $cli = $this->getMock('League\CLImate\CLImate');
         $cli->expects($this->never())->method($this->anything());;
-        $output = new XmlOutput($cli);
+        $output = new XmlOutput($cli, sys_get_temp_dir());
         $output->trigger(Command::EVENT_STARTING_ANALYSIS);
     }
 
@@ -46,7 +46,7 @@ class XmlOutputTest extends \PHPUnit_Framework_TestCase
     {
         $cli = $this->getMock('League\CLImate\CLImate');
         $cli->expects($this->never())->method($this->anything());;
-        $output = new XmlOutput($cli);
+        $output = new XmlOutput($cli, sys_get_temp_dir());
         $output->trigger(Command::EVENT_STARTING_TOOL, 'Toolname');
     }
 
@@ -55,7 +55,7 @@ class XmlOutputTest extends \PHPUnit_Framework_TestCase
     {
         $cli = $this->getMock('League\CLImate\CLImate');
         $cli->expects($this->never())->method($this->anything());;
-        $output = new XmlOutput($cli);
+        $output = new XmlOutput($cli, sys_get_temp_dir());
         $output->trigger(Command::EVENT_FINISHED_TOOL);
     }
 
@@ -64,7 +64,7 @@ class XmlOutputTest extends \PHPUnit_Framework_TestCase
     {
         $cli = $this->getMock('League\CLImate\CLImate');
         $cli->expects($this->never())->method($this->anything());;
-        $output = new XmlOutput($cli);
+        $output = new XmlOutput($cli, sys_get_temp_dir());
         $output->trigger(Command::EVENT_FINISHED_ANALYSIS);
     }
 }

@@ -102,7 +102,10 @@ class Command
 
         $outputClassName = $formatClasses[$format];
 
-        $this->output = new $outputClassName($this->cli);
+        $this->output = new $outputClassName(
+            $this->cli,
+            $this->getCurrentScriptDirectory()
+        );
     }
 
     /**
@@ -203,6 +206,17 @@ class Command
     }
 
     /**
+     * Running script path.
+     * @return string.
+     */
+    public function getCurrentScriptDirectory()
+    {
+        $debugBackTrace = debug_backtrace();
+        $lastItem = array_pop($debugBackTrace);
+        return dirname($lastItem['file']);
+    }
+
+    /**
      * Output format.
      * @return string format type.
      */
@@ -235,6 +249,7 @@ class Command
             'json' => 'phphound\output\JsonOutput',
             'xml' => 'phphound\output\XmlOutput',
             'csv' => 'phphound\output\CsvOutput',
+            'html' => 'phphound\output\HtmlOutput',
         ];
     }
 }

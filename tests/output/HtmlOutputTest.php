@@ -2,19 +2,19 @@
 namespace tests\output;
 
 use phphound\Command;
-use phphound\output\TextOutput;
+use phphound\output\HtmlOutput;
 
-class TextOutputTest extends \PHPUnit_Framework_TestCase
+class HtmlOutputTest extends \PHPUnit_Framework_TestCase
 {
     /** @test */
     public function it_outputs_results_correctly()
     {
         $cli = $this->getMockBuilder('League\CLImate\CLImate')
-            ->setMethods(['yellowFlank'])
+            ->setMethods(['out', 'inline'])
             ->getMock()
         ;
         $result = $this->getMock('phphound\AnalysisResult');
-        $output = new TextOutput($cli, sys_get_temp_dir());
+        $output = new HtmlOutput($cli, sys_get_temp_dir());
 
         $result->expects($this->once())->method('toArray')->willReturn([
             'File.php' => [
@@ -22,9 +22,8 @@ class TextOutputTest extends \PHPUnit_Framework_TestCase
             ],
         ]);
 
-        $cli->expects($this->any())->method('yellowFlank')->with('File.php', '=', 2);
-        $cli->expects($this->any())->method('cyanInline')->with('93: ');
-        $cli->expects($this->any())->method('inline')->with('Error trimmed');
+        $cli->expects($this->once())->method('inline')->with('Writing HTML report in "./phphound/"... ');
+        $cli->expects($this->any())->method('out')->with('Done!');
 
         $output->result($result);
     }
@@ -36,7 +35,7 @@ class TextOutputTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['green'])
             ->getMock()
         ;
-        $output = new TextOutput($cli, sys_get_temp_dir());
+        $output = new HtmlOutput($cli, sys_get_temp_dir());
 
         $cli->expects($this->once())->method('green')->with('Starting analysis');
 
@@ -50,7 +49,7 @@ class TextOutputTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['inline'])
             ->getMock()
         ;
-        $output = new TextOutput($cli, sys_get_temp_dir());
+        $output = new HtmlOutput($cli, sys_get_temp_dir());
 
         $cli->expects($this->once())->method('inline')->with('Running Toolname... ');
 
@@ -64,7 +63,7 @@ class TextOutputTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['out'])
             ->getMock()
         ;
-        $output = new TextOutput($cli, sys_get_temp_dir());
+        $output = new HtmlOutput($cli, sys_get_temp_dir());
 
         $cli->expects($this->once())->method('out')->with('Done!');
 
@@ -78,7 +77,7 @@ class TextOutputTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['green'])
             ->getMock()
         ;
-        $output = new TextOutput($cli, sys_get_temp_dir());
+        $output = new HtmlOutput($cli, sys_get_temp_dir());
 
         $cli->expects($this->once())->method('green')->with('Analysis complete!');
 

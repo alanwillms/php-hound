@@ -197,4 +197,24 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('phphound\output\CsvOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
     }
+
+    /** @test */
+    public function it_uses_html_output_with_format_html_param()
+    {
+        $arguments = ['php-hound', '--format=html'];
+        $cli = new CLImate;
+        $command = new Command($cli, $this->binariesPath, $arguments);
+
+        $this->assertInstanceOf('phphound\output\HtmlOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
+    }
+
+    /** @test */
+    public function it_uses_html_output_with_f_html_param()
+    {
+        $arguments = ['php-hound', '-f=html'];
+        $cli = new CLImate;
+        $command = new Command($cli, $this->binariesPath, $arguments);
+
+        $this->assertInstanceOf('phphound\output\HtmlOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
+    }
 }
