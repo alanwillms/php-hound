@@ -3,11 +3,16 @@ namespace phphound\output;
 
 use League\Plates\Engine;
 use phphound\AnalysisResult;
+use phphound\output\html\FileHighlighter;
 use DateTime;
 use SplFileObject;
 
 class HtmlOutput extends TextOutput
 {
+    /**
+     * Plates engine used to output HTML.
+     * @var Engine Plates engine instance.
+     */
     protected $platesEngine;
 
     /**
@@ -61,12 +66,13 @@ class HtmlOutput extends TextOutput
      */
     protected function writeFileHtml($phpFilePath, $lines)
     {
+        $highlighter = new FileHighlighter($phpFilePath, $lines);
         $fileHtml = $this->renderView(
             'file',
             [
                 'fileName' => $phpFilePath,
                 'lines' => $lines,
-                'fileContent' => $this->highlightFileWithLineNumbers($phpFilePath, $lines),
+                'fileContent' => $highlighter->getHtml(),
                 'backButton' => true,
             ]
         );
@@ -127,61 +133,5 @@ class HtmlOutput extends TextOutput
         }
 
         return $directory;
-    }
-
-    /**
-     * Highlight PHP file showing issues and line numbers.
-     * @param string $filePath analyzed file path.
-     * @param array $linesWithIssues lines of code containing issues.
-     * @return string HTML.
-     */
-    protected function highlightFileWithLineNumbers($filePath, array $linesWithIssues)
-    {
-        $highlight = "<code><span style=\"color: #000000\">";
-        $code = substr(highlight_file($filePath, true), 36, -15);
-        $lines = explode('<br />', $code);
-        $lineCount = count($lines);
-        $paddingLength = strlen($lineCount);
-
-        foreach ($lines as $i => $line) {
-            $lineNumber = $i + 1;
-            $paddedLineNumber = str_pad($lineNumber, $paddingLength, '0', STR_PAD_LEFT);
-            $hasIssues = isset($linesWithIssues[$lineNumber]);
-            $lineCssClass = $hasIssues ? 'has-issues' : 'no-issues';
-            $lineId = 'line' . $lineNumber;
-
-            $highlight .= '<div class="' . $lineCssClass . '" id="' . $lineId . '">';
-            $highlight .= '<span class="line-number">' . $paddedLineNumber . '</span>';
-
-            if ($hasIssues) {
-                $highlight .= $this->getIssuesTooltip($lineNumber, $linesWithIssues[$lineNumber]);
-            }
-
-            $highlight .= $line . '</div>';
-        }
-
-        $highlight .= "</span></code>";
-
-        return $highlight;
-    }
-
-    /**
-     * Create MaterialDesign tooltip showing issues for a given line of code.
-     * @param integer $lineNumber line number.
-     * @param array $issues list of issues for this line.
-     * @return string HTML.
-     */
-    protected function getIssuesTooltip($lineNumber, array $issues)
-    {
-        $html = '<div class="mdl-tooltip mdl-tooltip--large" for="line' . $lineNumber . '">';
-        $html .= '<ul>';
-
-        foreach ($issues as $issue) {
-            $html .= '<li>' . trim($issue['message']) . '</ul>';
-        }
-
-        $html .= '</ul></div>';
-
-        return $html;
     }
 }

@@ -39,9 +39,6 @@
   <?= $fileName ?>
 </div>
 <div class="mdl-card mdl-shadow--2dp">
-  <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text"><?= $fileName ?></h2>
-  </div>
   <div class="mdl-card__supporting-text">
     <?php foreach ($lines as $lineNumber => $issues) : ?>
     <?php foreach ($issues as $issue) : ?>
