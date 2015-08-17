@@ -24,7 +24,7 @@ class PHPMessDetector extends AbstractIntegration
      */
     public function getIgnoredArgument()
     {
-        if ($this->ignoredPaths) {
+        if (!empty($this->ignoredPaths)) {
             return '--exclude ' . implode(',', $this->ignoredPaths) . ' ';
         }
         return '';

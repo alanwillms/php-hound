@@ -25,7 +25,7 @@ class CsvOutputTest extends \PHPUnit_Framework_TestCase
             ->getMock()
         ;
         $result = $this->getMock('phphound\AnalysisResult');
-        $output = new CsvOutput($cli);
+        $output = new CsvOutput($cli, sys_get_temp_dir());
 
         $result->expects($this->once())->method('toArray')->willReturn($data);
         $cli->expects($this->once())->method('out')->with($csv);
@@ -38,7 +38,7 @@ class CsvOutputTest extends \PHPUnit_Framework_TestCase
     {
         $cli = $this->getMock('League\CLImate\CLImate');
         $cli->expects($this->never())->method($this->anything());;
-        $output = new CsvOutput($cli);
+        $output = new CsvOutput($cli, sys_get_temp_dir());
         $output->trigger(Command::EVENT_STARTING_ANALYSIS);
     }
 
@@ -47,7 +47,7 @@ class CsvOutputTest extends \PHPUnit_Framework_TestCase
     {
         $cli = $this->getMock('League\CLImate\CLImate');
         $cli->expects($this->never())->method($this->anything());;
-        $output = new CsvOutput($cli);
+        $output = new CsvOutput($cli, sys_get_temp_dir());
         $output->trigger(Command::EVENT_STARTING_TOOL, 'Toolname');
     }
 
@@ -56,7 +56,7 @@ class CsvOutputTest extends \PHPUnit_Framework_TestCase
     {
         $cli = $this->getMock('League\CLImate\CLImate');
         $cli->expects($this->never())->method($this->anything());;
-        $output = new CsvOutput($cli);
+        $output = new CsvOutput($cli, sys_get_temp_dir());
         $output->trigger(Command::EVENT_FINISHED_TOOL);
     }
 
@@ -65,7 +65,7 @@ class CsvOutputTest extends \PHPUnit_Framework_TestCase
     {
         $cli = $this->getMock('League\CLImate\CLImate');
         $cli->expects($this->never())->method($this->anything());;
-        $output = new CsvOutput($cli);
+        $output = new CsvOutput($cli, sys_get_temp_dir());
         $output->trigger(Command::EVENT_FINISHED_ANALYSIS);
     }
 }

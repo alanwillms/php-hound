@@ -20,7 +20,7 @@ class JsonOutputTest extends \PHPUnit_Framework_TestCase
             ->getMock()
         ;
         $result = $this->getMock('phphound\AnalysisResult');
-        $output = new JsonOutput($cli);
+        $output = new JsonOutput($cli, sys_get_temp_dir());
 
         $result->expects($this->once())->method('toArray')->willReturn($data);
         $cli->expects($this->once())->method('out')->with(json_encode($data));
@@ -33,7 +33,7 @@ class JsonOutputTest extends \PHPUnit_Framework_TestCase
     {
         $cli = $this->getMock('League\CLImate\CLImate');
         $cli->expects($this->never())->method($this->anything());;
-        $output = new JsonOutput($cli);
+        $output = new JsonOutput($cli, sys_get_temp_dir());
         $output->trigger(Command::EVENT_STARTING_ANALYSIS);
     }
 
@@ -42,7 +42,7 @@ class JsonOutputTest extends \PHPUnit_Framework_TestCase
     {
         $cli = $this->getMock('League\CLImate\CLImate');
         $cli->expects($this->never())->method($this->anything());;
-        $output = new JsonOutput($cli);
+        $output = new JsonOutput($cli, sys_get_temp_dir());
         $output->trigger(Command::EVENT_STARTING_TOOL, 'Toolname');
     }
 
@@ -51,7 +51,7 @@ class JsonOutputTest extends \PHPUnit_Framework_TestCase
     {
         $cli = $this->getMock('League\CLImate\CLImate');
         $cli->expects($this->never())->method($this->anything());;
-        $output = new JsonOutput($cli);
+        $output = new JsonOutput($cli, sys_get_temp_dir());
         $output->trigger(Command::EVENT_FINISHED_TOOL);
     }
 
@@ -60,7 +60,7 @@ class JsonOutputTest extends \PHPUnit_Framework_TestCase
     {
         $cli = $this->getMock('League\CLImate\CLImate');
         $cli->expects($this->never())->method($this->anything());;
-        $output = new JsonOutput($cli);
+        $output = new JsonOutput($cli, sys_get_temp_dir());
         $output->trigger(Command::EVENT_FINISHED_ANALYSIS);
     }
 }

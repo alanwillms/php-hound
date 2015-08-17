@@ -41,7 +41,7 @@ class TextOutput extends AbstractOutput
             $this->cli->yellowFlank($fileName, '=', 2);
             foreach ($lines as $line => $issues) {
                 foreach ($issues as $issue) {
-                    $this->cli->cyanInline($line . ': ');
+                    $this->cli->cyan()->inline($line . ': ');
                     $this->cli->inline(trim($issue['message']));
                     $this->cli->br();
                 }

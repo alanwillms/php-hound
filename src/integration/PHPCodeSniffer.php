@@ -24,7 +24,7 @@ class PHPCodeSniffer extends AbstractIntegration
      */
     public function getIgnoredArgument()
     {
-        if ($this->ignoredPaths) {
+        if (!empty($this->ignoredPaths)) {
             return '--ignore=' . implode(',', $this->ignoredPaths) . ' ';
         }
         return '';

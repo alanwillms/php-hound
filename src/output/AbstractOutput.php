@@ -14,12 +14,19 @@ abstract class AbstractOutput
     protected $cli;
 
     /**
+     * Output directory path.
+     * @var string directory path.
+     */
+    protected $outputDirectory;
+
+    /**
      * Set dependencies.
      * @param CLImate $climate CLImate instance.
      */
-    public function __construct(CLImate $climate)
+    public function __construct(CLImate $climate, $outputDirectory)
     {
         $this->cli = $climate;
+        $this->outputDirectory = $outputDirectory;
     }
 
     /**
