@@ -6,6 +6,32 @@ use phphound\output\HtmlOutput;
 
 class HtmlOutputTest extends \PHPUnit_Framework_TestCase
 {
+    protected $runningScriptDir;
+
+    protected function setUp()
+    {
+        $this->runningScriptDir = __DIR__ . '/../tmp/';
+    }
+
+    protected function tearDown()
+    {
+        if (file_exists($this->runningScriptDir . 'phphound')) {
+            $this->recursiveRemoveDirectory($this->runningScriptDir . 'phphound');
+        }
+    }
+
+    protected function recursiveRemoveDirectory($directory)
+    {
+        foreach (glob("{$directory}/*") as $file) {
+            if (is_dir($file)) {
+                $this->recursiveRemoveDirectory($file);
+                continue;
+            }
+            unlink($file);
+        }
+        rmdir($directory);
+    }
+
     /** @test */
     public function it_outputs_results_correctly()
     {
@@ -14,11 +40,11 @@ class HtmlOutputTest extends \PHPUnit_Framework_TestCase
             ->getMock()
         ;
         $result = $this->getMock('phphound\AnalysisResult');
-        $output = new HtmlOutput($cli, sys_get_temp_dir());
+        $output = new HtmlOutput($cli, $this->runningScriptDir);
 
-        $result->expects($this->once())->method('toArray')->willReturn([
-            'File.php' => [
-                93 => [['tool' => 'PHP-Hound', 'type' => 'error', 'message' => '   Error trimmed  ']],
+        $result->expects($this->any())->method('toArray')->willReturn([
+            realpath(__DIR__ . '/../data/File.php') => [
+                2 => [['tool' => 'PHP-Hound', 'type' => 'error', 'message' => '   Error trimmed  ']],
             ],
         ]);
 
@@ -35,7 +61,7 @@ class HtmlOutputTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['green'])
             ->getMock()
         ;
-        $output = new HtmlOutput($cli, sys_get_temp_dir());
+        $output = new HtmlOutput($cli, $this->runningScriptDir);
 
         $cli->expects($this->once())->method('green')->with('Starting analysis');
 
@@ -49,7 +75,7 @@ class HtmlOutputTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['inline'])
             ->getMock()
         ;
-        $output = new HtmlOutput($cli, sys_get_temp_dir());
+        $output = new HtmlOutput($cli, $this->runningScriptDir);
 
         $cli->expects($this->once())->method('inline')->with('Running Toolname... ');
 
@@ -63,7 +89,7 @@ class HtmlOutputTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['out'])
             ->getMock()
         ;
-        $output = new HtmlOutput($cli, sys_get_temp_dir());
+        $output = new HtmlOutput($cli, $this->runningScriptDir);
 
         $cli->expects($this->once())->method('out')->with('Done!');
 
@@ -77,7 +103,7 @@ class HtmlOutputTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['green'])
             ->getMock()
         ;
-        $output = new HtmlOutput($cli, sys_get_temp_dir());
+        $output = new HtmlOutput($cli, $this->runningScriptDir);
 
         $cli->expects($this->once())->method('green')->with('Analysis complete!');
 
