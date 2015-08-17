@@ -60,12 +60,12 @@ class Command
      */
     public function run()
     {
-        if ($this->cli->arguments->defined('help', $this->arguments)) {
+        if ($this->hasArgumentValue('help')) {
             $this->cli->usage();
             return null;
         }
 
-        if ($this->cli->arguments->defined('version', $this->arguments)) {
+        if ($this->hasArgumentValue('version')) {
             $this->cli->out($this->getDescription());
             return null;
         }
@@ -191,7 +191,7 @@ class Command
      */
     public function getIgnoredPaths()
     {
-        $ignoredArgument = $this->cli->arguments->get('ignore', $this->arguments);
+        $ignoredArgument = $this->getArgumentValue('ignore');
         $ignoredPaths = explode(',', $ignoredArgument);
         return array_filter($ignoredPaths);
     }
@@ -202,12 +202,12 @@ class Command
      */
     public function getAnalysedPath()
     {
-        return $this->cli->arguments->get('path', $this->arguments);
+        return $this->getArgumentValue('path');
     }
 
     /**
      * Running script path.
-     * @return string.
+     * @return string current script directory.
      */
     public function getCurrentScriptDirectory()
     {
@@ -222,7 +222,7 @@ class Command
      */
     public function getOutputFormat()
     {
-        return $this->cli->arguments->get('format', $this->arguments);
+        return $this->getArgumentValue('format');
     }
 
     /**
@@ -251,5 +251,25 @@ class Command
             'csv' => 'phphound\output\CsvOutput',
             'html' => 'phphound\output\HtmlOutput',
         ];
+    }
+
+    /**
+     * Get argument value from user informed arguments.
+     * @param string $name argument name.
+     * @return Mixed argument value.
+     */
+    protected function getArgumentValue($name)
+    {
+        return $this->cli->arguments->get($name, $this->arguments);
+    }
+
+    /**
+     * Check if the user supplied an argument.
+     * @param string $name argument name.
+     * @return boolean if the argument has informed or not.
+     */
+    protected function hasArgumentValue($name)
+    {
+        return $this->cli->arguments->defined($name, $this->arguments);
     }
 }

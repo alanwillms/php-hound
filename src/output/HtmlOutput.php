@@ -145,7 +145,7 @@ class HtmlOutput extends TextOutput
 
         foreach ($lines as $i => $line) {
             $lineNumber = $i + 1;
-            $paddedLineNumber = str_pad($lineNumber,  $paddingLength, '0', STR_PAD_LEFT);
+            $paddedLineNumber = str_pad($lineNumber, $paddingLength, '0', STR_PAD_LEFT);
             $hasIssues = isset($linesWithIssues[$lineNumber]);
             $lineCssClass = $hasIssues ? 'has-issues' : 'no-issues';
             $lineId = 'line' . $lineNumber;

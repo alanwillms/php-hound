@@ -15,8 +15,8 @@
     <?php foreach ($files as $fileName => $issuesCount) : ?>
     <tr>
       <td class="mdl-data-table__cell--non-numeric"><a href="<?=
-      str_replace(DIRECTORY_SEPARATOR, '_', $fileName) . '.html'
-      ?>"><?= $fileName ?></a></td>
+        str_replace(DIRECTORY_SEPARATOR, '_', $fileName) . '.html'
+        ?>"><?= $fileName ?></a></td>
       <td><?= $issuesCount ?></td>
     </tr>
     <?php endforeach; ?>
