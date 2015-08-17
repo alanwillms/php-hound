@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 ### Added
+- Add `html` report (as an output format)
 - Add `json`, `xml` and `csv` output formats
 - Add `--format` / `-f` argument to change output format
 - Add `--version` / `-v` argument to display current version
