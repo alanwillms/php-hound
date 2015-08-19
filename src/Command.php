@@ -105,7 +105,7 @@ class Command
 
         $this->output = new $outputClassName(
             $this->cli,
-            $this->getCurrentScriptDirectory()
+            $this->getWorkingDirectory()
         );
     }
 
@@ -210,11 +210,9 @@ class Command
      * Running script path.
      * @return string current script directory.
      */
-    public function getCurrentScriptDirectory()
+    public function getWorkingDirectory()
     {
-        $debugBackTrace = debug_backtrace();
-        $lastItem = array_pop($debugBackTrace);
-        return dirname($lastItem['file']);
+        return getcwd();
     }
 
     /**
