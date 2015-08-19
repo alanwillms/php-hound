@@ -1,6 +1,7 @@
 <?php
 namespace phphound;
 
+use phphound\output\AbstractOutput;
 use UnexpectedValueException;
 use League\CLImate\CLImate;
 
@@ -28,7 +29,7 @@ class Command
 
     /**
      * Output service.
-     * @var TextOutput TextOutput instance.
+     * @var AbstractOutput output instance.
      */
     protected $output;
 
@@ -260,7 +261,7 @@ class Command
      */
     protected function getArgumentValue($name)
     {
-        return $this->cli->arguments->get($name, $this->arguments);
+        return $this->cli->arguments->get($name);
     }
 
     /**

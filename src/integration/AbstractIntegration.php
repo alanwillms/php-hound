@@ -51,10 +51,11 @@ abstract class AbstractIntegration
 
     /**
      * Creates and execute tool command, returning output results.
+     * @param AnalysisResult $resultSet result object.
      * @param string $targetPath file/directory path to be analysed.
      * @return string CLI JSON output.
      */
-    public function run($resultSet, $targetPath)
+    public function run(AnalysisResult $resultSet, $targetPath)
     {
         $this->executeCommand($targetPath);
         $this->parseOutput($resultSet);
@@ -73,7 +74,8 @@ abstract class AbstractIntegration
 
     /**
      * Convert tool output into PHP Hound array output.
-     * @return array
+     * @param AnalysisResult $resultSet result object.
+     * @return void
      */
     protected function parseOutput($resultSet)
     {
@@ -110,8 +112,8 @@ abstract class AbstractIntegration
 
     /**
      * Convert integration XML output to PHP Hound format.
-     * @param Reader XML reader object.
-     * @param AnalysisResult result object.
+     * @param Reader $xml XML reader object.
+     * @param AnalysisResult $resultSet result object.
      * @return void
      */
     abstract protected function convertOutput(Reader $xml, AnalysisResult $resultSet);

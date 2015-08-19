@@ -3,7 +3,6 @@ namespace phphound\output;
 
 use League\CLImate\CLImate;
 use phphound\AnalysisResult;
-use phphound\Command;
 
 abstract class AbstractOutput
 {
@@ -22,6 +21,7 @@ abstract class AbstractOutput
     /**
      * Set dependencies.
      * @param CLImate $climate CLImate instance.
+     * @param string $outputDirectory directory where files will be created.
      */
     public function __construct(CLImate $climate, $outputDirectory)
     {

@@ -8,7 +8,7 @@ class AnalysisResult
 {
     /**
      * Result data.
-     * @var array analys result data.
+     * @var array analysis result data.
      */
     protected $data = [];
 
