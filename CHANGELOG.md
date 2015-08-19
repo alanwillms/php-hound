@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
+
+## 0.5.1 - 2015-08-19
+### Fixed
+- It was not generating HTML reports in the working directory.
+
+## 0.5.0 - 2015-08-17
 ### Added
 - Add `html` report (as an output format)
 - Add `json`, `xml` and `csv` output formats
