@@ -47,14 +47,14 @@ class PHPCodeSniffer extends AbstractIntegration
     {
         $xmlArray = $xml->parse();
 
-        foreach (ArrayHelper::ensure($xmlArray['value']) as $fileTag) {
+        foreach ((array) $xmlArray['value'] as $fileTag) {
             if ($fileTag['name'] != '{}file') {
                 continue;
             }
 
             $fileName = $fileTag['attributes']['name'];
 
-            foreach (ArrayHelper::ensure($fileTag['value']) as $issueTag) {
+            foreach ((array) $fileTag['value'] as $issueTag) {
                 $line = $issueTag['attributes']['line'];
                 $tool = 'PHPCodeSniffer';
                 $type = $issueTag['attributes']['source'];

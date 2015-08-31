@@ -4,32 +4,9 @@ namespace phphound\output;
 use phphound\AnalysisResult;
 use phphound\Command;
 
-class TextOutput extends AbstractOutput
+class TextOutput extends AbstractOutput implements TriggerableInterface
 {
-    /**
-     * @inheritdoc
-     */
-    public function trigger($eventType, $data = null)
-    {
-        switch ($eventType) {
-            case Command::EVENT_STARTING_ANALYSIS:
-                $this->cli->green('Starting analysis');
-                break;
-
-            case Command::EVENT_STARTING_TOOL:
-                $this->cli->inline('Running ' . $data . '... ');
-                break;
-
-            case Command::EVENT_FINISHED_TOOL:
-                $this->cli->out('Done!');
-                break;
-
-            case Command::EVENT_FINISHED_ANALYSIS:
-                $this->cli->br();
-                $this->cli->green('Analysis complete!');
-                break;
-        }
-    }
+    use TextTriggerTrait;
 
     /**
      * @inheritdoc

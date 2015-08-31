@@ -2,6 +2,7 @@
 namespace phphound;
 
 use phphound\output\AbstractOutput;
+use phphound\output\TriggerableInterface;
 use UnexpectedValueException;
 use League\CLImate\CLImate;
 
@@ -115,17 +116,27 @@ class Command
      */
     protected function runAllAnalysisTools()
     {
-        $this->output->trigger(self::EVENT_STARTING_ANALYSIS);
         $resultSet = new AnalysisResult;
-        foreach ($this->getAnalysisToolsClasses() as $className) {
-            $command = new $className($this->binariesPath, sys_get_temp_dir());
-            $command->setIgnoredPaths($this->getIgnoredPaths());
-            $this->output->trigger(self::EVENT_STARTING_TOOL, $command->getDescription());
-            $command->run($resultSet, $this->getAnalysedPath());
-            $this->output->trigger(self::EVENT_FINISHED_TOOL);
+        $this->trigger(self::EVENT_STARTING_ANALYSIS);
+        foreach ($this->getAnalysisTools() as $tool) {
+            $this->trigger(self::EVENT_STARTING_TOOL, $tool->getDescription());
+            $tool->run($resultSet, $this->getAnalysedPath());
+            $this->trigger(self::EVENT_FINISHED_TOOL);
         }
         $this->output->result($resultSet);
-        $this->output->trigger(self::EVENT_FINISHED_ANALYSIS);
+        $this->trigger(self::EVENT_FINISHED_ANALYSIS);
+    }
+
+    /**
+     * Call an output trigger if supported.
+     * @param int $event occurred event.
+     * @return void
+     */
+    protected function trigger($event)
+    {
+        if ($this->output instanceof TriggerableInterface) {
+            $this->output->trigger($event);
+        }
     }
 
     /**
@@ -235,6 +246,23 @@ class Command
             'phphound\integration\PHPCopyPasteDetector',
             'phphound\integration\PHPMessDetector',
         ];
+    }
+
+    /**
+     * Set of PHP analys integration objects.
+     * @return phphound\integration\AbstractIntegration[] set of objects.
+     */
+    protected function getAnalysisTools()
+    {
+        $objects = [];
+
+        foreach ($this->getAnalysisToolsClasses() as $className) {
+            $tool = new $className($this->binariesPath, sys_get_temp_dir());
+            $tool->setIgnoredPaths($this->getIgnoredPaths());
+            $objects[] = $tool;
+        }
+
+        return $objects;
     }
 
     /**

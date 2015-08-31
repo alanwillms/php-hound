@@ -32,40 +32,4 @@ class CsvOutputTest extends \PHPUnit_Framework_TestCase
 
         $output->result($result);
     }
-
-    /** @test */
-    public function it_doesnt_output_on_starting_analysis()
-    {
-        $cli = $this->getMock('League\CLImate\CLImate');
-        $cli->expects($this->never())->method($this->anything());;
-        $output = new CsvOutput($cli, sys_get_temp_dir());
-        $output->trigger(Command::EVENT_STARTING_ANALYSIS);
-    }
-
-    /** @test */
-    public function it_doesnt_output_on_starting_tool()
-    {
-        $cli = $this->getMock('League\CLImate\CLImate');
-        $cli->expects($this->never())->method($this->anything());;
-        $output = new CsvOutput($cli, sys_get_temp_dir());
-        $output->trigger(Command::EVENT_STARTING_TOOL, 'Toolname');
-    }
-
-    /** @test */
-    public function it_doesnt_output_on_finishing_tool()
-    {
-        $cli = $this->getMock('League\CLImate\CLImate');
-        $cli->expects($this->never())->method($this->anything());;
-        $output = new CsvOutput($cli, sys_get_temp_dir());
-        $output->trigger(Command::EVENT_FINISHED_TOOL);
-    }
-
-    /** @test */
-    public function it_doesnt_output_on_finishing_analysis()
-    {
-        $cli = $this->getMock('League\CLImate\CLImate');
-        $cli->expects($this->never())->method($this->anything());;
-        $output = new CsvOutput($cli, sys_get_temp_dir());
-        $output->trigger(Command::EVENT_FINISHED_ANALYSIS);
-    }
 }

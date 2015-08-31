@@ -47,13 +47,13 @@ class PHPCopyPasteDetector extends AbstractIntegration
     {
         $xmlArray = $xml->parse();
 
-        foreach (ArrayHelper::ensure($xmlArray['value']) as $duplicationTag) {
+        foreach ((array) $xmlArray['value'] as $duplicationTag) {
             if ($duplicationTag['name'] != '{}duplication'
                 || empty($duplicationTag['value'])) {
                 continue;
             }
 
-            foreach (ArrayHelper::ensure($duplicationTag['value']) as $fileTag) {
+            foreach ((array) $duplicationTag['value'] as $fileTag) {
                 if ($fileTag['name'] != '{}file') {
                     continue;
                 }
