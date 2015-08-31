@@ -50,16 +50,11 @@ class History
 
         foreach ($toolsIssues as $tool => $issues) {
             if (!isset($data['historyData'][$tool])) {
+                $builds = count($data['executions']);
                 $data['historyData'][$tool] = [
                     'name' => $tool,
-                    'data' => [],
+                    'data' => $builds > 1 ? array_fill(0, $builds - 1, 0) : [],
                 ];
-
-                $data['historyData'][$tool]['data'] = array_fill(
-                    0,
-                    count($data['executions']) - 1,
-                    0
-                );
             }
             $data['historyData'][$tool]['data'][] = $issues;
         }
