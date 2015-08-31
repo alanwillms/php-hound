@@ -4,11 +4,14 @@ namespace phphound\output;
 use League\Plates\Engine;
 use phphound\AnalysisResult;
 use phphound\output\html\FileHighlighter;
+use phphound\output\html\History;
 use DateTime;
 use SplFileObject;
 
-class HtmlOutput extends TextOutput
+class HtmlOutput extends AbstractOutput implements TriggerableInterface
 {
+    use TextTriggerTrait;
+
     /**
      * Plates engine used to output HTML.
      * @var Engine Plates engine instance.
@@ -22,10 +25,13 @@ class HtmlOutput extends TextOutput
     {
         $this->cli->br();
         $this->cli->inline('Writing HTML report in "./phphound/"... ');
-        $this->writeIndexHtml($result);
+        $history = new History($this->getOutputDirectory());
+        $history->append($result);
         foreach ($result->toArray() as $filePath => $lines) {
             $this->writeFileHtml($filePath, $lines);
         }
+        $this->writeIndexHtml($result, $history);
+        $history->save();
         $this->cli->out('Done!');
     }
 
@@ -34,7 +40,7 @@ class HtmlOutput extends TextOutput
      * @param AnalysisResult $result result data object.
      * @return void
      */
-    protected function writeIndexHtml(AnalysisResult $result)
+    protected function writeIndexHtml(AnalysisResult $result, History $history)
     {
         $files = [];
 
@@ -48,12 +54,16 @@ class HtmlOutput extends TextOutput
             }
         }
 
+        $chartData = $history->getData();
         $indexHtml = $this->renderView(
             'index',
-            ['files' => $files]
+            [
+                'files' => $files,
+                'executions' => $chartData['executions'],
+                'historyData' => array_values($chartData['historyData']),
+            ]
         );
         $fileName = $this->getOutputDirectory() . '/index.html';
-        touch($fileName);
         $file = new SplFileObject($fileName, 'w');
         $file->fwrite($indexHtml);
     }
@@ -79,7 +89,6 @@ class HtmlOutput extends TextOutput
         $htmlFileName = $this->getOutputDirectory() . '/'
             . str_replace(DIRECTORY_SEPARATOR, '_', $phpFilePath) . '.html';
 
-        touch($htmlFileName);
         $file = new SplFileObject($htmlFileName, 'w');
         $file->fwrite($fileHtml);
     }

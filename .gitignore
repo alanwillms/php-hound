@@ -1,4 +1,4 @@
-/bin/phphound/
+/phphound/
 /build/
 /vendor/
 composer.lock

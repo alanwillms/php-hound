@@ -44,24 +44,24 @@ class PHPMessDetector extends AbstractIntegration
     /**
      * @inheritdoc
      */
-    protected function convertOutput(Reader $xml, AnalysisResult $resultSet)
+    protected function addIssuesFromXml(Reader $xml)
     {
         $xmlArray = $xml->parse();
 
-        foreach (ArrayHelper::ensure($xmlArray['value']) as $fileTag) {
+        foreach ((array) $xmlArray['value'] as $fileTag) {
             if ($fileTag['name'] != '{}file') {
                 continue;
             }
 
             $fileName = $fileTag['attributes']['name'];
 
-            foreach (ArrayHelper::ensure($fileTag['value']) as $issueTag) {
+            foreach ((array) $fileTag['value'] as $issueTag) {
                 $line = $issueTag['attributes']['beginline'];
                 $tool = 'PHPMessDetector';
                 $type = $issueTag['attributes']['rule'];
                 $message = $issueTag['value'];
 
-                $resultSet->addIssue($fileName, $line, $tool, $type, $message);
+                $this->result->addIssue($fileName, $line, $tool, $type, $message);
             }
         }
     }

@@ -30,16 +30,6 @@ abstract class AbstractOutput
     }
 
     /**
-     * Log event messages.
-     * @param integer $eventType Command class event constant.
-     * @param mixed $data Optional message.
-     * @return void
-     */
-    public function trigger($eventType, $data = null)
-    {
-    }
-
-    /**
      * Outputs reduced analysis result.
      * @param  AnalysisResult $result reduced result data.
      * @return void

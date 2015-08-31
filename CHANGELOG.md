@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
+### Added
+- Add a history chart to HTML output, displaying quality issues over time.
+
+### Changed
+- Each third party tool generates its own `AnalysisResult`
 
 ## 0.5.1 - 2015-08-19
 ### Fixed

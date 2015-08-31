@@ -28,6 +28,12 @@ abstract class AbstractIntegration
     protected $ignoredPaths;
 
     /**
+     * Analysis result for this integration.
+     * @var AnalysisResult result object.
+     */
+    protected $result;
+
+    /**
      * Stores binaries path.
      * @param string $binariesPath where the bin scripts are located.
      * @param string $temporaryDirPath where temporary files will be created.
@@ -37,6 +43,7 @@ abstract class AbstractIntegration
         $this->binariesPath = $binariesPath;
         $this->temporaryFilePath = tempnam($temporaryDirPath, 'PHP-Hound');
         $this->ignoredPaths = [];
+        $this->result = new AnalysisResult;
     }
 
     /**
@@ -50,15 +57,24 @@ abstract class AbstractIntegration
     }
 
     /**
+     * Analysis results for this integration.
+     * @return AnalysisResult analysis result object.
+     */
+    public function getAnalysisResult()
+    {
+        return $this->result;
+    }
+
+    /**
      * Creates and execute tool command, returning output results.
      * @param AnalysisResult $resultSet result object.
      * @param string $targetPath file/directory path to be analysed.
      * @return string CLI JSON output.
      */
-    public function run(AnalysisResult $resultSet, $targetPath)
+    public function run($targetPath)
     {
         $this->executeCommand($targetPath);
-        $this->parseOutput($resultSet);
+        $this->processResults();
     }
 
     /**
@@ -68,24 +84,22 @@ abstract class AbstractIntegration
      */
     protected function executeCommand($targetPath)
     {
-        $command = $this->getCommand($targetPath);
-        exec($command);
+        exec($this->getCommand($targetPath));
     }
 
     /**
      * Convert tool output into PHP Hound array output.
-     * @param AnalysisResult $resultSet result object.
      * @return void
      */
-    protected function parseOutput($resultSet)
+    protected function processResults()
     {
-        $xml = new Reader;
         $content = $this->getOutputContent();
         if (empty($content)) {
-            return [];
+            return;
         }
+        $xml = new Reader;
         $xml->xml($content);
-        $this->convertOutput($xml, $resultSet);
+        $this->addIssuesFromXml($xml);
     }
 
     /**
@@ -111,10 +125,9 @@ abstract class AbstractIntegration
     abstract public function getCommand($targetPath);
 
     /**
-     * Convert integration XML output to PHP Hound format.
+     * Read issues from the XML output.
      * @param Reader $xml XML reader object.
-     * @param AnalysisResult $resultSet result object.
      * @return void
      */
-    abstract protected function convertOutput(Reader $xml, AnalysisResult $resultSet);
+    abstract protected function addIssuesFromXml(Reader $xml);
 }
