@@ -54,6 +54,12 @@ class History
                     'name' => $tool,
                     'data' => [],
                 ];
+
+                $data['historyData'][$tool]['data'] = array_fill(
+                    0,
+                    count($data['executions']) - 1,
+                    0
+                );
             }
             $data['historyData'][$tool]['data'][] = $issues;
         }

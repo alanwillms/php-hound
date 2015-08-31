@@ -14,7 +14,7 @@ class HistoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_appends_results_data()
+    function it_appends_results_data()
     {
         $directory = sys_get_temp_dir();
         $data = [
@@ -49,7 +49,7 @@ class HistoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_loads_existing_data()
+    function it_loads_existing_data()
     {
         $directory = sys_get_temp_dir();
         $data = [
@@ -66,7 +66,7 @@ class HistoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_saves_data()
+    function it_saves_data()
     {
         $directory = sys_get_temp_dir();
         $data = [
@@ -80,8 +80,8 @@ class HistoryTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
         ];
-        $result = $this->getMock('phphound\AnalysisResult');
         $history = new History($directory);
+        $result = $this->getMock('phphound\AnalysisResult');
         $result->expects($this->once())->method('toArray')->willReturn($data);
         $history->append($result);
         $history->save();
@@ -89,5 +89,49 @@ class HistoryTest extends \PHPUnit_Framework_TestCase
         $this->assertFileExists($directory . '/history.json');
         $fileContent = file_get_contents($directory . '/history.json');
         $this->assertEquals(json_encode($history->getData()), $fileContent);
+    }
+
+    /** @test */
+    function it_doesnot_break_with_a_new_integration_setup_after_a_few_runs()
+    {
+        $directory = sys_get_temp_dir();
+        $oldHistory = [
+            'executions' => ['Aug 31 12:30', 'Sep 2 15:17'],
+            'historyData' => [
+                'PHPMessDetector' => ['name' => 'PHPMessDetector', 'data' => [12, 3]],
+                'PHPCodeSniffer' => ['name' => 'PHPCodeSniffer', 'data' => [5, 2]],
+                'PHPCopyPasteDetector' => ['name' => 'PHPCopyPasteDetector', 'data' => [1, 1]],
+            ]
+        ];
+        $data = [
+            'File.php' => [
+                111 => [
+                    ['tool' => 'PHPMessDetector', 'type' => 'xxx', 'message' => 'xxx'],
+                    ['tool' => 'PHPCodeSniffer', 'type' => 'xxx', 'message' => 'xxx'],
+                    ['tool' => 'PHPCopyPasteDetector', 'type' => 'xxx', 'message' => 'xxx'],
+                    ['tool' => 'NewTool', 'type' => 'xxx', 'message' => 'xxx'],
+                ],
+            ],
+        ];
+        $newHistory = [
+            'executions' => ['Aug 31 12:30', 'Sep 2 15:17', 'Sep 7 23:45'],
+            'historyData' => [
+                'PHPMessDetector' => ['name' => 'PHPMessDetector', 'data' => [12, 3, 1]],
+                'PHPCodeSniffer' => ['name' => 'PHPCodeSniffer', 'data' => [5, 2, 1]],
+                'PHPCopyPasteDetector' => ['name' => 'PHPCopyPasteDetector', 'data' => [1, 1, 1]],
+                'NewTool' => ['name' => 'NewTool', 'data' => [0, 0, 1]],
+            ]
+        ];
+
+        file_put_contents($directory . '/history.json', json_encode($oldHistory));
+
+        $history = new History($directory);
+        $result = $this->getMock('phphound\AnalysisResult');
+        $result->expects($this->once())->method('toArray')->willReturn($data);
+        $history->append($result);
+
+        $historyData = $history->getData();
+
+        $this->assertEquals($newHistory['historyData'], $historyData['historyData']);
     }
 }
