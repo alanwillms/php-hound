@@ -21,6 +21,8 @@ It currently supports:
 * [PHPMessDetector](https://github.com/phpmd/phpmd): checks for complex, unused,
   broken or unclear code.
 
+![HTML index page example](html-index.png)
+
 ## Installation
 
 PHP Hound can be installed through [Composer](https://getcomposer.org).
