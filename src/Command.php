@@ -116,14 +116,15 @@ class Command
      */
     protected function runAllAnalysisTools()
     {
-        $resultSet = new AnalysisResult;
+        $result = new AnalysisResult;
         $this->trigger(self::EVENT_STARTING_ANALYSIS);
         foreach ($this->getAnalysisTools() as $tool) {
             $this->trigger(self::EVENT_STARTING_TOOL, $tool->getDescription());
-            $tool->run($resultSet, $this->getAnalysedPath());
+            $tool->run($this->getAnalysedPath());
+            $result->mergeWith($tool->getAnalysisResult());
             $this->trigger(self::EVENT_FINISHED_TOOL);
         }
-        $this->output->result($resultSet);
+        $this->output->result($result);
         $this->trigger(self::EVENT_FINISHED_ANALYSIS);
     }
 

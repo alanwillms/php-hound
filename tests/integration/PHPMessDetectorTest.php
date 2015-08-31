@@ -60,8 +60,7 @@ EOT;
             [$this->binariesPath, $this->binariesPath]
         );
         $integration->expects($this->any())->method('getOutputContent')->willReturn($xml);
-        $resultSet = new AnalysisResult;
-        $integration->run($resultSet, 'target.php');
+        $integration->run('target.php');
 
         $this->assertEquals(
             [
@@ -73,7 +72,7 @@ EOT;
                     10 => [['tool' => 'PHPMessDetector', 'type' => 'ShortVariable', 'message' => 'Avoid variables with short names']],
                 ]
             ],
-            $resultSet->toArray()
+            $integration->getAnalysisResult()->toArray()
         );
     }
 }

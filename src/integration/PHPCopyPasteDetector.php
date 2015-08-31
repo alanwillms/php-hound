@@ -43,7 +43,7 @@ class PHPCopyPasteDetector extends AbstractIntegration
     /**
      * @inheritdoc
      */
-    protected function convertOutput(Reader $xml, AnalysisResult $resultSet)
+    protected function addIssuesFromXml(Reader $xml)
     {
         $xmlArray = $xml->parse();
 
@@ -64,7 +64,7 @@ class PHPCopyPasteDetector extends AbstractIntegration
                 $type = 'duplication';
                 $message = 'Duplicated code';
 
-                $resultSet->addIssue($fileName, $line, $tool, $type, $message);
+                $this->result->addIssue($fileName, $line, $tool, $type, $message);
             }
         }
     }

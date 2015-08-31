@@ -58,8 +58,7 @@ EOT;
             [$this->binariesPath, $this->binariesPath]
         );
         $integration->expects($this->any())->method('getOutputContent')->willReturn($xml);
-        $resultSet = new AnalysisResult;
-        $integration->run($resultSet, 'target.php');
+        $integration->run('target.php');
 
         $this->assertEquals(
             [
@@ -68,7 +67,7 @@ EOT;
                     394 => [['tool' => 'PHPCopyPasteDetector', 'type' => 'duplication', 'message' => 'Duplicated code']],
                 ],
             ],
-            $resultSet->toArray()
+            $integration->getAnalysisResult()->toArray()
         );
     }
 }

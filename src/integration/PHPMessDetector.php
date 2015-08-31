@@ -44,7 +44,7 @@ class PHPMessDetector extends AbstractIntegration
     /**
      * @inheritdoc
      */
-    protected function convertOutput(Reader $xml, AnalysisResult $resultSet)
+    protected function addIssuesFromXml(Reader $xml)
     {
         $xmlArray = $xml->parse();
 
@@ -61,7 +61,7 @@ class PHPMessDetector extends AbstractIntegration
                 $type = $issueTag['attributes']['rule'];
                 $message = $issueTag['value'];
 
-                $resultSet->addIssue($fileName, $line, $tool, $type, $message);
+                $this->result->addIssue($fileName, $line, $tool, $type, $message);
             }
         }
     }
