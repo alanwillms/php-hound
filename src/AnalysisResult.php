@@ -67,10 +67,10 @@ class AnalysisResult
 
     /**
      * Merge the data of another result into this one.
-     * @param self $other another analysis result object.
-     * @return self returns itself.
+     * @param AnalysisResult $other another analysis result object.
+     * @return AnalysisResult returns itself.
      */
-    public function mergeWith(self $other)
+    public function mergeWith(AnalysisResult $other)
     {
         foreach ($other->toArray() as $fileName => $lines) {
             foreach ($lines as $line => $issues) {
