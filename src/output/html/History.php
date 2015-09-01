@@ -16,6 +16,12 @@ class History
     protected $cachedData;
 
     /**
+     * Directory where history information will be stored.
+     * @var string directory path.
+     */
+    protected $outputDirectory;
+
+    /**
      * Set dependencies.
      * @param string $outputDirectory target directory path.
      */

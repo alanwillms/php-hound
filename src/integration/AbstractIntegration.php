@@ -67,7 +67,6 @@ abstract class AbstractIntegration
 
     /**
      * Creates and execute tool command, returning output results.
-     * @param AnalysisResult $resultSet result object.
      * @param string $targetPath file/directory path to be analysed.
      * @return string CLI JSON output.
      */

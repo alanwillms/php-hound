@@ -131,12 +131,13 @@ class Command
     /**
      * Call an output trigger if supported.
      * @param int $event occurred event.
+     * @param string|null $message optional message.
      * @return void
      */
-    protected function trigger($event)
+    protected function trigger($event, $message = null)
     {
         if ($this->output instanceof TriggerableInterface) {
-            $this->output->trigger($event);
+            $this->output->trigger($event, $message);
         }
     }
 

@@ -12,10 +12,10 @@ trait TextTriggerTrait
     /**
      * Output event messages.
      * @param integer $eventType Command class event constant.
-     * @param mixed $data Optional message.
+     * @param string|null $message optional message.
      * @return void
      */
-    public function trigger($eventType, $data = null)
+    public function trigger($eventType, $message = null)
     {
         switch ($eventType) {
             case Command::EVENT_STARTING_ANALYSIS:
@@ -23,7 +23,7 @@ trait TextTriggerTrait
                 break;
 
             case Command::EVENT_STARTING_TOOL:
-                $this->cli->inline('Running ' . $data . '... ');
+                $this->cli->inline('Running ' . $message . '... ');
                 break;
 
             case Command::EVENT_FINISHED_TOOL:
