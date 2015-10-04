@@ -23,7 +23,11 @@ trait TextTriggerTrait
                 break;
 
             case Command::EVENT_STARTING_TOOL:
-                $this->cli->inline('Running ' . $message . '... ');
+                $this->cli->inline('Running ' . $message['description'] . '... ');
+                $this->cli->inline('Ignored paths:');
+                foreach ($message['ignoredPaths'] as $ignoredPath) {
+                    $this->cli->inline(str_pad($ignoredPath, 5, ' ', STR_PAD_LEFT));
+                }
                 break;
 
             case Command::EVENT_FINISHED_TOOL:

@@ -53,6 +53,7 @@ class TextOutputTest extends \PHPUnit_Framework_TestCase
         $output = new TextOutput($cli, sys_get_temp_dir());
 
         $cli->expects($this->once())->method('inline')->with('Running Toolname... ');
+        $cli->expects($this->once())->method('inline')->with('Ignored paths:');
 
         $output->trigger(Command::EVENT_STARTING_TOOL, 'Toolname');
     }

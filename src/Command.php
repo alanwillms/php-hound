@@ -119,7 +119,11 @@ class Command
         $result = new AnalysisResult;
         $this->trigger(self::EVENT_STARTING_ANALYSIS);
         foreach ($this->getAnalysisTools() as $tool) {
-            $this->trigger(self::EVENT_STARTING_TOOL, $tool->getDescription());
+            $startingMessage= [
+              'description' => $tool->getDescription(),
+               'ignoredPaths' => $tool->getIgnoredPaths()
+             ];
+            $this->trigger(self::EVENT_STARTING_TOOL, $startingMessage);
             $tool->run($this->getAnalysedPath());
             $result->mergeWith($tool->getAnalysisResult());
             $this->trigger(self::EVENT_FINISHED_TOOL);

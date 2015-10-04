@@ -64,6 +64,7 @@ class HtmlOutputTest extends \PHPUnit_Framework_TestCase
         $output = new HtmlOutput($cli, $this->runningScriptDir);
 
         $cli->expects($this->once())->method('green')->with('Starting analysis');
+        $cli->expects($this->once())->method('inline')->with('Ignored paths:');
 
         $output->trigger(Command::EVENT_STARTING_ANALYSIS);
     }
