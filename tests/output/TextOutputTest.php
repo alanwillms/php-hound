@@ -51,11 +51,14 @@ class TextOutputTest extends \PHPUnit_Framework_TestCase
             ->getMock()
         ;
         $output = new TextOutput($cli, sys_get_temp_dir());
+        $message = ['description' => 'Toolname', 'ignoredPaths' => ['vendor', 'tests']];
 
-        $cli->expects($this->once())->method('inline')->with('Running Toolname... ');
-        $cli->expects($this->once())->method('inline')->with('Ignored paths:');
+        $cli->expects($this->at(0))->method('inline')->with('Running Toolname... ');
+        $cli->expects($this->at(1))->method('inline')->with('Ignored paths:');
+        $cli->expects($this->at(2))->method('inline')->with('     ' . $message['ignoredPaths'][0]);
+        $cli->expects($this->at(3))->method('inline')->with('     ' . $message['ignoredPaths'][1]);
 
-        $output->trigger(Command::EVENT_STARTING_TOOL, 'Toolname');
+        $output->trigger(Command::EVENT_STARTING_TOOL, $message);
     }
 
     /** @test */
