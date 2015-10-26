@@ -57,6 +57,15 @@ abstract class AbstractIntegration
     }
 
     /**
+     * Return ignored targets during execution.
+     * @return array $targets target file or directory paths to be ignored.
+     */
+    public function getIgnoredPaths()
+    {
+        return $this->ignoredPaths;
+    }
+
+    /**
      * Analysis results for this integration.
      * @return AnalysisResult analysis result object.
      */
