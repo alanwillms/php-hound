@@ -1,27 +1,15 @@
 <?php
 namespace phphound;
 
-use phphound\output\AbstractOutput;
-use phphound\output\TriggerableInterface;
-use UnexpectedValueException;
 use League\CLImate\CLImate;
+use phphound\output\AbstractOutput;
+use UnexpectedValueException;
 
 /**
  * Command line tool that run all script analyzers.
  */
 class Command
 {
-    const EVENT_STARTING_ANALYSIS = 0;
-    const EVENT_STARTING_TOOL = 1;
-    const EVENT_FINISHED_TOOL = 2;
-    const EVENT_FINISHED_ANALYSIS = 3;
-
-    /**
-     * Composer binaries path.
-     * @var string directory path.
-     */
-    protected $binariesPath;
-
     /**
      * CLI tool.
      * @var CLImate CLImate instance.
@@ -29,10 +17,10 @@ class Command
     protected $cli;
 
     /**
-     * Output service.
-     * @var AbstractOutput output instance.
+     * Analyser.
+     * @var Analyser analyser instance.
      */
-    protected $output;
+    protected $analyser;
 
     /**
      * Command line arguments.
@@ -49,11 +37,18 @@ class Command
     public function __construct(CLImate $climate, $binariesPath, array $arguments)
     {
         $this->cli = $climate;
-        $this->binariesPath = $binariesPath;
         $this->arguments = $arguments;
 
-        $this->initializeCLI();
-        $this->initializeOutput();
+        $this->cli->arguments->add($this->getArguments());
+        $this->cli->arguments->parse($this->arguments);
+
+        $this->analyser = new Analyser(
+            $this->getOutput(),
+            $binariesPath,
+            $this->getAnalysedPath(),
+            $this->getIgnoredPaths()
+        );
+        $this->cli->description($this->analyser->getDescription());
     }
 
     /**
@@ -64,34 +59,23 @@ class Command
     {
         if ($this->hasArgumentValue('help')) {
             $this->cli->usage();
-            return null;
+            return;
         }
 
         if ($this->hasArgumentValue('version')) {
-            $this->cli->out($this->getDescription());
-            return null;
+            $this->cli->out($this->analyser->getDescription());
+            return;
         }
 
-        $this->runAllAnalysisTools();
-    }
-
-    /**
-     * Initialize CLI tool.
-     * @return void
-     */
-    protected function initializeCLI()
-    {
-        $this->cli->description($this->getDescription());
-        $this->cli->arguments->add($this->getArguments());
-        $this->cli->arguments->parse($this->arguments);
+        $this->analyser->run();
     }
 
     /**
      * Initialize output.
      * @throws UnexpectedValueException on invalid format value.
-     * @return void
+     * @return AbstractOutput
      */
-    protected function initializeOutput()
+    protected function getOutput()
     {
         $format = $this->getOutputFormat();
         $formatClasses = $this->getOutputFormatClasses();
@@ -104,63 +88,10 @@ class Command
 
         $outputClassName = $formatClasses[$format];
 
-        $this->output = new $outputClassName(
+        return new $outputClassName(
             $this->cli,
             $this->getWorkingDirectory()
         );
-    }
-
-    /**
-     * Run each configured PHP analysis tool.
-     * @return void
-     */
-    protected function runAllAnalysisTools()
-    {
-        $result = new AnalysisResult;
-        $this->trigger(self::EVENT_STARTING_ANALYSIS);
-        foreach ($this->getAnalysisTools() as $tool) {
-            $startingMessage= [
-              'description' => $tool->getDescription(),
-               'ignoredPaths' => $tool->getIgnoredPaths()
-             ];
-            $this->trigger(self::EVENT_STARTING_TOOL, $startingMessage);
-            $tool->run($this->getAnalysedPath());
-            $result->mergeWith($tool->getAnalysisResult());
-            $this->trigger(self::EVENT_FINISHED_TOOL);
-        }
-        $this->output->result($result);
-        $this->trigger(self::EVENT_FINISHED_ANALYSIS);
-    }
-
-    /**
-     * Call an output trigger if supported.
-     * @param int $event occurred event.
-     * @param string|null $message optional message.
-     * @return void
-     */
-    protected function trigger($event, $message = null)
-    {
-        if ($this->output instanceof TriggerableInterface) {
-            $this->output->trigger($event, $message);
-        }
-    }
-
-    /**
-     * CLI output description.
-     * @return string description.
-     */
-    protected function getDescription()
-    {
-        return 'PHP Hound ' . $this->getVersion();
-    }
-
-    /**
-     * Current PHP Hound version.
-     * @return string semantic version.
-     */
-    protected function getVersion()
-    {
-        return '0.6.0';
     }
 
     /**
@@ -239,36 +170,6 @@ class Command
     public function getOutputFormat()
     {
         return $this->getArgumentValue('format');
-    }
-
-    /**
-     * List of PHP analys integration classes.
-     * @return array array of class names.
-     */
-    protected function getAnalysisToolsClasses()
-    {
-        return [
-            'phphound\integration\PHPCodeSniffer',
-            'phphound\integration\PHPCopyPasteDetector',
-            'phphound\integration\PHPMessDetector',
-        ];
-    }
-
-    /**
-     * Set of PHP analys integration objects.
-     * @return phphound\integration\AbstractIntegration[] set of objects.
-     */
-    protected function getAnalysisTools()
-    {
-        $objects = [];
-
-        foreach ($this->getAnalysisToolsClasses() as $className) {
-            $tool = new $className($this->binariesPath, sys_get_temp_dir());
-            $tool->setIgnoredPaths($this->getIgnoredPaths());
-            $objects[] = $tool;
-        }
-
-        return $objects;
     }
 
     /**

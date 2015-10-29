@@ -8,7 +8,7 @@ interface TriggerableInterface
 {
     /**
      * Output event messages.
-     * @param integer $eventType Command class event constant.
+     * @param integer $eventType Analyser class event constant.
      * @param mixed $data Optional message.
      * @return void
      */
