@@ -1,7 +1,7 @@
 <?php
 namespace tests\output;
 
-use phphound\Command;
+use phphound\Analyser;
 use phphound\output\TextOutput;
 
 class TextOutputTest extends \PHPUnit_Framework_TestCase
@@ -33,14 +33,20 @@ class TextOutputTest extends \PHPUnit_Framework_TestCase
     public function it_outputs_on_starting_analysis()
     {
         $cli = $this->getMockBuilder('League\CLImate\CLImate')
-            ->setMethods(['green'])
+            ->setMethods(['green', 'red', 'out'])
             ->getMock()
         ;
         $output = new TextOutput($cli, sys_get_temp_dir());
 
-        $cli->expects($this->once())->method('green')->with('Starting analysis');
+        $cli->expects($this->at(0))->method('green')->with('Starting analysis');
+        $cli->expects($this->at(1))->method('out')->with('(ignored paths:)');
+        $cli->expects($this->at(2))->method('red')->with("\tvendor");
+        $cli->expects($this->at(3))->method('red')->with("\ttests");
 
-        $output->trigger(Command::EVENT_STARTING_ANALYSIS);
+        $output->trigger(
+            Analyser::EVENT_STARTING_ANALYSIS,
+            ['ignoredPaths' => ['vendor', 'tests']]
+        );
     }
 
     /** @test */
@@ -51,14 +57,11 @@ class TextOutputTest extends \PHPUnit_Framework_TestCase
             ->getMock()
         ;
         $output = new TextOutput($cli, sys_get_temp_dir());
-        $message = ['description' => 'Toolname', 'ignoredPaths' => ['vendor', 'tests']];
+        $message = ['description' => 'Toolname'];
 
-        $cli->expects($this->at(0))->method('inline')->with('Running Toolname... ');
-        $cli->expects($this->at(1))->method('inline')->with('Ignored paths:');
-        $cli->expects($this->at(2))->method('inline')->with('     ' . $message['ignoredPaths'][0]);
-        $cli->expects($this->at(3))->method('inline')->with('     ' . $message['ignoredPaths'][1]);
+        $cli->expects($this->once())->method('inline')->with('Running Toolname... ');
 
-        $output->trigger(Command::EVENT_STARTING_TOOL, $message);
+        $output->trigger(Analyser::EVENT_STARTING_TOOL, $message);
     }
 
     /** @test */
@@ -72,7 +75,7 @@ class TextOutputTest extends \PHPUnit_Framework_TestCase
 
         $cli->expects($this->once())->method('out')->with('Done!');
 
-        $output->trigger(Command::EVENT_FINISHED_TOOL);
+        $output->trigger(Analyser::EVENT_FINISHED_TOOL);
     }
 
     /** @test */
@@ -86,6 +89,6 @@ class TextOutputTest extends \PHPUnit_Framework_TestCase
 
         $cli->expects($this->once())->method('green')->with('Analysis complete!');
 
-        $output->trigger(Command::EVENT_FINISHED_ANALYSIS);
+        $output->trigger(Analyser::EVENT_FINISHED_ANALYSIS);
     }
 }

@@ -2,7 +2,9 @@
 namespace tests;
 
 use League\CLImate\CLImate;
+use phphound\Analyser;
 use phphound\Command;
+use ReflectionClass;
 
 class CommandTest extends \PHPUnit_Framework_TestCase
 {
@@ -50,14 +52,9 @@ class CommandTest extends \PHPUnit_Framework_TestCase
             'League\CLImate\CLImate',
             ['out']
         );
-        $cli->expects($this->once())->method('out')->with('PHP Hound 1.2.3');
+        $cli->expects($this->once())->method('out')->with('PHP Hound ' . Analyser::VERSION);
 
-        $command = $this->getMock(
-            'phphound\Command',
-            ['getDescription'],
-            [$cli, $this->binariesPath, $arguments]
-        );
-        $command->expects($this->once())->method('getDescription')->willReturn('PHP Hound 1.2.3');
+        $command = new Command($cli, $this->binariesPath, $arguments);
 
         $command->run();
     }
@@ -145,7 +142,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $cli = new CLImate;
         $command = new Command($cli, $this->binariesPath, $arguments);
 
-        $this->assertInstanceOf('phphound\output\JsonOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
+        $this->assertInstanceOf('phphound\output\JsonOutput', $this->invokeGetOutput($command));
     }
 
     /** @test */
@@ -155,7 +152,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $cli = new CLImate;
         $command = new Command($cli, $this->binariesPath, $arguments);
 
-        $this->assertInstanceOf('phphound\output\JsonOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
+        $this->assertInstanceOf('phphound\output\JsonOutput', $this->invokeGetOutput($command));
     }
 
     /** @test */
@@ -165,7 +162,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $cli = new CLImate;
         $command = new Command($cli, $this->binariesPath, $arguments);
 
-        $this->assertInstanceOf('phphound\output\XmlOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
+        $this->assertInstanceOf('phphound\output\XmlOutput', $this->invokeGetOutput($command));
     }
 
     /** @test */
@@ -175,7 +172,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $cli = new CLImate;
         $command = new Command($cli, $this->binariesPath, $arguments);
 
-        $this->assertInstanceOf('phphound\output\XmlOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
+        $this->assertInstanceOf('phphound\output\XmlOutput', $this->invokeGetOutput($command));
     }
 
     /** @test */
@@ -185,7 +182,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $cli = new CLImate;
         $command = new Command($cli, $this->binariesPath, $arguments);
 
-        $this->assertInstanceOf('phphound\output\CsvOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
+        $this->assertInstanceOf('phphound\output\CsvOutput', $this->invokeGetOutput($command));
     }
 
     /** @test */
@@ -195,7 +192,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $cli = new CLImate;
         $command = new Command($cli, $this->binariesPath, $arguments);
 
-        $this->assertInstanceOf('phphound\output\CsvOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
+        $this->assertInstanceOf('phphound\output\CsvOutput', $this->invokeGetOutput($command));
     }
 
     /** @test */
@@ -205,7 +202,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $cli = new CLImate;
         $command = new Command($cli, $this->binariesPath, $arguments);
 
-        $this->assertInstanceOf('phphound\output\HtmlOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
+        $this->assertInstanceOf('phphound\output\HtmlOutput', $this->invokeGetOutput($command));
     }
 
     /** @test */
@@ -215,6 +212,14 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $cli = new CLImate;
         $command = new Command($cli, $this->binariesPath, $arguments);
 
-        $this->assertInstanceOf('phphound\output\HtmlOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
+        $this->assertInstanceOf('phphound\output\HtmlOutput', $this->invokeGetOutput($command));
+    }
+
+    protected function invokeGetOutput($command)
+    {
+        $class = new ReflectionClass($command);
+        $method = $class->getMethod('getOutput');
+        $method->setAccessible(true);
+        return $method->invoke($command);
     }
 }

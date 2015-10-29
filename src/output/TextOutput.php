@@ -2,7 +2,6 @@
 namespace phphound\output;
 
 use phphound\AnalysisResult;
-use phphound\Command;
 
 class TextOutput extends AbstractOutput implements TriggerableInterface
 {

@@ -1,7 +1,6 @@
 <?php
 namespace tests\output;
 
-use phphound\Command;
 use phphound\output\JsonOutput;
 
 class JsonOutputTest extends \PHPUnit_Framework_TestCase
