@@ -33,9 +33,9 @@ class PHPMessDetector extends AbstractIntegration
     /**
      * @inheritdoc
      */
-    public function getCommand($targetPath)
+    public function getCommand($targetPaths)
     {
-        return $this->binariesPath . 'phpmd ' . $targetPath . ' '
+        return $this->binariesPath . 'phpmd ' . implode(',', $targetPaths) . ' '
             . 'xml cleancode,codesize,controversial,design,naming,unusedcode '
             . $this->getIgnoredArgument() . '> "'
             . $this->temporaryFilePath . '"';

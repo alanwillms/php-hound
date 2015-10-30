@@ -3,6 +3,10 @@ namespace phphound;
 
 use League\CLImate\CLImate;
 use phphound\output\AbstractOutput;
+use phphound\output\filter\DiffOutputFilter;
+use ReflectionMethod;
+use SebastianBergmann\Diff\Parser;
+use SebastianBergmann\Git\Git;
 use UnexpectedValueException;
 
 /**
@@ -29,6 +33,12 @@ class Command
     protected $arguments;
 
     /**
+     * Analysis targets paths.
+     * @var array list of files and directories paths.
+     */
+    protected $analysedPaths;
+
+    /**
      * Set dependencies and initialize CLI.
      * @param CLImate $climate CLImate instance.
      * @param string $binariesPath Composer binaries path.
@@ -37,18 +47,20 @@ class Command
     public function __construct(CLImate $climate, $binariesPath, array $arguments)
     {
         $this->cli = $climate;
+        $this->cli->description($this->getDescription());
+        $this->cli->arguments->add($this->getArguments());
+        $this->cli->arguments->parse($arguments);
+
         $this->arguments = $arguments;
 
-        $this->cli->arguments->add($this->getArguments());
-        $this->cli->arguments->parse($this->arguments);
+        $this->setAnalysedPathsFromString($this->getArgumentValue('path'));
 
         $this->analyser = new Analyser(
             $this->getOutput(),
             $binariesPath,
-            $this->getAnalysedPath(),
+            $this->getAnalysedPaths(),
             $this->getIgnoredPaths()
         );
-        $this->cli->description($this->analyser->getDescription());
     }
 
     /**
@@ -63,11 +75,39 @@ class Command
         }
 
         if ($this->hasArgumentValue('version')) {
-            $this->cli->out($this->analyser->getDescription());
+            $this->cli->out($this->getDescription());
             return;
         }
 
-        $this->analyser->run();
+        if ($this->hasArgumentValue('git-diff')) {
+            $gitDiff = $this->getArgumentValue('git-diff');
+            $filter = $this->getGitDiffFilter($gitDiff);
+            $this->getAnalyser()->setResultsFilter($filter);
+        }
+
+        $this->getAnalyser()->run();
+    }
+
+    /**
+     * Create a DiffOutputFilter based on a git-diff param.
+     * @param string $gitDiff git diff arguments.
+     * @return DiffOutputFilter filter instance.
+     */
+    protected function getGitDiffFilter($gitDiff)
+    {
+        $analysedPaths = $this->getAnalysedPaths();
+        $gitPath = array_shift($analysedPaths);
+        if (!is_dir($gitPath)) {
+            $gitPath = dirname($gitPath);
+        }
+        $git = new Git($gitPath);
+        $executeMethod = new ReflectionMethod($git, 'execute');
+        $executeMethod->setAccessible(true);
+        $gitRoot = trim(implode("\n", $executeMethod->invoke($git, 'git rev-parse --show-toplevel')));
+        list($base, $changed) = explode('..', $gitDiff);
+        $diff = $git->getDiff($base, $changed);
+        $diffParser = new Parser;
+        return new DiffOutputFilter($gitRoot, $diffParser->parse($diff));
     }
 
     /**
@@ -127,6 +167,13 @@ class Command
                 'castTo' => 'string',
                 'defaultValue' => 'text',
             ],
+            'git-diff' => [
+                'prefix' => 'g',
+                'longPrefix' => 'git-diff',
+                'description' => 'Limit to files and lines changed between two '
+                               . 'commits or branches, e.g., "master..other".',
+                'castTo' => 'string',
+            ],
             'path' => [
                 'description' => 'File or directory path to analyze',
                 'defaultValue' => '.',
@@ -136,7 +183,7 @@ class Command
 
     /**
      * Get a list of paths to be ignored by the analysis.
-     * @return array a list of file and/or directory paths.
+     * @return string[] a list of file and/or directory paths.
      */
     public function getIgnoredPaths()
     {
@@ -146,12 +193,30 @@ class Command
     }
 
     /**
-     * Analysis target path.
-     * @return string target path.
+     * Parse a string of comma separated files and/or directories to be analysed.
+     * @param string $pathsString the path argument value.
+     * @return void
      */
-    public function getAnalysedPath()
+    protected function setAnalysedPathsFromString($pathsString)
     {
-        return $this->getArgumentValue('path');
+        $rawAnalysedPaths = explode(',', $pathsString);
+        $analysedPaths = array_filter($rawAnalysedPaths);
+        foreach ($analysedPaths as &$path) {
+            if (0 === strpos($path, DIRECTORY_SEPARATOR)) {
+                continue;
+            }
+            $path = $this->getWorkingDirectory() . DIRECTORY_SEPARATOR . $path;
+        }
+        $this->analysedPaths = $analysedPaths;
+    }
+
+    /**
+     * Analysis target paths.
+     * @return string[] a list of analysed paths (usually just one).
+     */
+    public function getAnalysedPaths()
+    {
+        return $this->analysedPaths;
     }
 
     /**
@@ -170,6 +235,24 @@ class Command
     public function getOutputFormat()
     {
         return $this->getArgumentValue('format');
+    }
+
+    /**
+     * CLI output description.
+     * @return string description.
+     */
+    public function getDescription()
+    {
+        return 'PHP Hound ' . Analyser::VERSION;
+    }
+
+    /**
+     * Analyser instance.
+     * @return Analyser instance.
+     */
+    public function getAnalyser()
+    {
+        return $this->analyser;
     }
 
     /**

@@ -4,12 +4,19 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 ### Added
+- Add `git-diff` option for limiting results to files and lines touched
+  between two commits or branches.
+- Output a list of the ignored paths. By @GuidoBR
+
+### Changed
+- Extracts an `Analyser` class from `Command`.
+
+## 0.6.0 - 2015-08-31
+### Added
 - Add a history chart to HTML output, displaying quality issues over time.
-- Output a list of the ignored paths.
 
 ### Changed
 - Each third party tool generates its own `AnalysisResult`.
-- Extracts an `Analyser` class from `Command`.
 
 ## 0.5.1 - 2015-08-19
 ### Fixed

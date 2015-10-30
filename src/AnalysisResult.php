@@ -1,6 +1,8 @@
 <?php
 namespace phphound;
 
+use phphound\output\filter\OutputFilterInterface;
+
 /**
  * Code analysis result.
  */
@@ -11,6 +13,12 @@ class AnalysisResult
      * @var array analysis result data.
      */
     protected $data = [];
+
+    /**
+     * Analysis result filter.
+     * @var OutputFilterInterface filter instance.
+     */
+    protected $filter;
 
     /**
      * Register an issue.
@@ -62,6 +70,10 @@ class AnalysisResult
 
         ksort($data);
 
+        if (null !== $this->filter) {
+            $data = $this->filter->filter($data);
+        }
+
         return $data;
     }
 
@@ -86,5 +98,14 @@ class AnalysisResult
             }
         }
         return $this;
+    }
+
+    /**
+     * Add an output filter to delegate to the analysis result object.
+     * @param OutputFilterInterface $filter filter instance.
+     */
+    public function setResultsFilter(OutputFilterInterface $filter)
+    {
+        $this->filter = $filter;
     }
 }

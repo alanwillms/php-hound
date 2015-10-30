@@ -2,8 +2,8 @@
 namespace phphound;
 
 use phphound\output\AbstractOutput;
+use phphound\output\filter\OutputFilterInterface;
 use phphound\output\TriggerableInterface;
-use SebastianBergmann\Diff\Parser;
 
 /**
  * Run all script analysers and outputs their result.
@@ -25,13 +25,13 @@ class Analyser
 
     /**
      * Analysis target.
-     * @var string file or directory path.
+     * @var string[] file or directory path.
      */
-    protected $analysedPath;
+    protected $analysedPaths;
 
     /**
      * Ignored paths.
-     * @var string comma separated list of directories to ignore.
+     * @var string[] comma separated list of directories to ignore.
      */
     protected $ignoredPaths;
 
@@ -42,17 +42,23 @@ class Analyser
     protected $output;
 
     /**
+     * Analysis result filter.
+     * @var OutputFilterInterface filter instance.
+     */
+    protected $resultsFilter;
+
+    /**
      * Set dependencies and initialize CLI.
      * @param AbstractOutput $output Output target.
      * @param string $binariesPath Composer binaries path.
-     * @param string $analysedPath target file or directory path.
-     * @param string $ignoredPaths comma separated list of ignored directories.
+     * @param string[] $analysedPaths target file or directory path.
+     * @param string[] $ignoredPaths comma separated list of ignored directories.
      */
-    public function __construct(AbstractOutput $output, $binariesPath, $analysedPath, $ignoredPaths)
+    public function __construct(AbstractOutput $output, $binariesPath, $analysedPaths, $ignoredPaths)
     {
         $this->output = $output;
         $this->binariesPath = $binariesPath;
-        $this->analysedPath = $analysedPath;
+        $this->analysedPaths = $analysedPaths;
         $this->ignoredPaths = $ignoredPaths;
     }
 
@@ -67,13 +73,19 @@ class Analyser
             self::EVENT_STARTING_ANALYSIS,
             ['ignoredPaths' => $this->ignoredPaths]
         );
+
         foreach ($this->getAnalysisTools() as $tool) {
             $message = ['description' => $tool->getDescription()];
             $this->trigger(self::EVENT_STARTING_TOOL, $message);
-            $tool->run($this->getAnalysedPath());
+            $tool->run($this->getAnalysedPaths());
             $result->mergeWith($tool->getAnalysisResult());
             $this->trigger(self::EVENT_FINISHED_TOOL);
         }
+
+        if ($this->resultsFilter) {
+            $result->setResultsFilter($this->resultsFilter);
+        }
+
         $this->output->result($result);
         $this->trigger(self::EVENT_FINISHED_ANALYSIS);
     }
@@ -92,17 +104,8 @@ class Analyser
     }
 
     /**
-     * CLI output description.
-     * @return string description.
-     */
-    public function getDescription()
-    {
-        return 'PHP Hound ' . self::VERSION;
-    }
-
-    /**
      * Get a list of paths to be ignored by the analysis.
-     * @return array a list of file and/or directory paths.
+     * @return string[] a list of file and/or directory paths.
      */
     public function getIgnoredPaths()
     {
@@ -111,16 +114,25 @@ class Analyser
 
     /**
      * Analysis target path.
-     * @return string target path.
+     * @return string[] target path.
      */
-    public function getAnalysedPath()
+    public function getAnalysedPaths()
     {
-        return $this->analysedPath;
+        return $this->analysedPaths;
+    }
+
+    /**
+     * Add an output filter to delegate to the analysis result object.
+     * @param OutputFilterInterface $filter filter instance.
+     */
+    public function setResultsFilter(OutputFilterInterface $filter)
+    {
+        $this->resultsFilter = $filter;
     }
 
     /**
      * List of PHP analys integration classes.
-     * @return array array of class names.
+     * @return string[] array of class names.
      */
     protected function getAnalysisToolsClasses()
     {

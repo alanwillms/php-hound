@@ -4,6 +4,7 @@ namespace tests;
 use League\CLImate\CLImate;
 use phphound\Analyser;
 use phphound\AnalysisResult;
+use phphound\output\filter\DiffOutputFilter;
 
 class AnalyserTest extends \PHPUnit_Framework_TestCase
 {
@@ -63,150 +64,41 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
         $analyser->run();
     }
 
-    // /** @test */
-    // public function it_accepts_target_path()
-    // {
-    //     $cli = $this->getMock('League\CLImate\CLImate', ['output']);
-    //     $arguments = ['php-hound', 'target/path'];
-    //     $command = new Command($cli, $this->binariesPath, $arguments);
-    //     $this->assertEquals('target/path', $command->getAnalysedPath());
-    // }
-    //
-    // /** @test */
-    // public function it_uses_current_dir_as_target_path_when_not_informed()
-    // {
-    //     $cli = $this->getMock('League\CLImate\CLImate', ['output']);
-    //     $arguments = ['php-hound'];
-    //     $command = new Command($cli, $this->binariesPath, $arguments);
-    //     $this->assertEquals('.', $command->getAnalysedPath());
-    // }
-    //
-    // /** @test */
-    // public function it_accepts_ignore_param()
-    // {
-    //     $cli = $this->getMock('League\CLImate\CLImate', ['output']);
-    //     $arguments = ['php-hound', '--ignore=dir'];
-    //
-    //     $command = new Command($cli, $this->binariesPath, $arguments);
-    //     $this->assertEquals(['dir'], $command->getIgnoredPaths());
-    // }
-    //
-    // /** @test */
-    // public function it_accepts_ignore_param_with_multiple_directories()
-    // {
-    //     $cli = $this->getMock('League\CLImate\CLImate', ['output']);
-    //     $arguments = ['php-hound', '--ignore=dir1,dir2'];
-    //
-    //     $command = new Command($cli, $this->binariesPath, $arguments);
-    //     $this->assertEquals(['dir1', 'dir2'], $command->getIgnoredPaths());
-    // }
-    //
-    // /** @test */
-    // public function it_has_ignore_param_default()
-    // {
-    //     $cli = $this->getMock('League\CLImate\CLImate', ['output']);
-    //     $arguments = ['php-hound'];
-    //
-    //     $command = new Command($cli, $this->binariesPath, $arguments);
-    //     $this->assertEquals(['vendor', 'tests', 'features', 'spec'], $command->getIgnoredPaths());
-    // }
-    //
-    // /** @test */
-    // public function it_accepts_ignore_param_with_empty_value()
-    // {
-    //     $cli = $this->getMock('League\CLImate\CLImate', ['output']);
-    //     $arguments = ['php-hound', '--ignore='];
-    //
-    //     $command = new Command($cli, $this->binariesPath, $arguments);
-    //     $this->assertEquals([], $command->getIgnoredPaths());
-    // }
-    //
-    // /** @test */
-    // public function it_does_not_accept_invalid_format_value()
-    // {
-    //     $this->setExpectedException('UnexpectedValueException');
-    //     $arguments = ['php-hound', '--format=invalid'];
-    //     $cli = new CLImate;
-    //     $command = new Command($cli, $this->binariesPath, $arguments);
-    // }
-    //
-    // /** @test */
-    // public function it_uses_json_output_with_format_json_param()
-    // {
-    //     $arguments = ['php-hound', '--format=json'];
-    //     $cli = new CLImate;
-    //     $command = new Command($cli, $this->binariesPath, $arguments);
-    //
-    //     $this->assertInstanceOf('phphound\output\JsonOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
-    // }
-    //
-    // /** @test */
-    // public function it_uses_json_output_with_f_json_param()
-    // {
-    //     $arguments = ['php-hound', '-f=json'];
-    //     $cli = new CLImate;
-    //     $command = new Command($cli, $this->binariesPath, $arguments);
-    //
-    //     $this->assertInstanceOf('phphound\output\JsonOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
-    // }
-    //
-    // /** @test */
-    // public function it_uses_xml_output_with_format_xml_param()
-    // {
-    //     $arguments = ['php-hound', '--format=xml'];
-    //     $cli = new CLImate;
-    //     $command = new Command($cli, $this->binariesPath, $arguments);
-    //
-    //     $this->assertInstanceOf('phphound\output\XmlOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
-    // }
-    //
-    // /** @test */
-    // public function it_uses_xml_output_with_f_xml_param()
-    // {
-    //     $arguments = ['php-hound', '-f=xml'];
-    //     $cli = new CLImate;
-    //     $command = new Command($cli, $this->binariesPath, $arguments);
-    //
-    //     $this->assertInstanceOf('phphound\output\XmlOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
-    // }
-    //
-    // /** @test */
-    // public function it_uses_csv_output_with_format_csv_param()
-    // {
-    //     $arguments = ['php-hound', '--format=csv'];
-    //     $cli = new CLImate;
-    //     $command = new Command($cli, $this->binariesPath, $arguments);
-    //
-    //     $this->assertInstanceOf('phphound\output\CsvOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
-    // }
-    //
-    // /** @test */
-    // public function it_uses_csv_output_with_f_csv_param()
-    // {
-    //     $arguments = ['php-hound', '-f=csv'];
-    //     $cli = new CLImate;
-    //     $command = new Command($cli, $this->binariesPath, $arguments);
-    //
-    //     $this->assertInstanceOf('phphound\output\CsvOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
-    // }
-    //
-    // /** @test */
-    // public function it_uses_html_output_with_format_html_param()
-    // {
-    //     $arguments = ['php-hound', '--format=html'];
-    //     $cli = new CLImate;
-    //     $command = new Command($cli, $this->binariesPath, $arguments);
-    //
-    //     $this->assertInstanceOf('phphound\output\HtmlOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
-    // }
-    //
-    // /** @test */
-    // public function it_uses_html_output_with_f_html_param()
-    // {
-    //     $arguments = ['php-hound', '-f=html'];
-    //     $cli = new CLImate;
-    //     $command = new Command($cli, $this->binariesPath, $arguments);
-    //
-    //     $this->assertInstanceOf('phphound\output\HtmlOutput', \PHPUnit_Framework_Assert::readAttribute($command, 'output'));
-    // }
+    /** @test **/
+    public function it_delegates_results_filter_to_analysis_result()
+    {
+        // $filter = new DiffOutputFilter('', []);
+        // $result = $this->getMock('phphound\AnalysisResult', null);
+        // $result->expects($this->once())->method('setResultsFilter')->with($filter);
+        //
+        // $analyser = $this
+        //     ->getMockBuilder('phphound\Analyser')
+        //     ->setMethods(['getAnalysisTools'])
+        //     ->setConstructorArgs([
+        //         $this->output,
+        //         $this->binariesPath,
+        //         '.',
+        //         []
+        //     ])
+        //     ->getMock()
+        // ;
+        // $tool = $this
+        //     ->getMockBuilder('phphound\integration\PHPCodeSniffer')
+        //     ->disableOriginalConstructor()
+        //     ->getMock()
+        // ;
+        // $analyser
+        //     ->expects($this->once())
+        //     ->method('getAnalysisTools')
+        //     ->willReturn([$tool])
+        // ;
+        // $tool
+        //     ->method('run')
+        //     ->willReturn(new AnalysisResult)
+        // ;
+        // $tool->method('getAnalysisResult')->willReturn($result);
+        //
+        // $analyser->setResultsFilter($filter);
+        // $analyser->run();
+    }
 }

@@ -2,6 +2,7 @@
 namespace phphound\output;
 
 use League\Plates\Engine;
+use phphound\Analyser;
 use phphound\AnalysisResult;
 use phphound\output\html\FileHighlighter;
 use phphound\output\html\History;
@@ -108,7 +109,7 @@ class HtmlOutput extends AbstractOutput implements TriggerableInterface
             'layout',
             [
                 'content' => $content,
-                'phpHoundVersion' => 'PHP Hound 0.4.0',
+                'phpHoundVersion' => 'PHP Hound ' . Analyser::VERSION,
                 'phpVersion' => 'PHP ' . phpversion(),
                 'generationTime' => $date->format('r'),
                 'backButton' => !empty($data['backButton']),
