@@ -76,17 +76,34 @@ You can run `php-hound --help` to display a list of all available options.
 php-hound [optional arguments] [path to be analysed]
 
 Optional Arguments:
+	-f format, --format format (default: text)
+		Output format
+	-h, --help
+		Prints a usage statement
+	-i ignore, --ignore ignore (default: vendor,tests,features,spec)
+		Ignore a comma-separated list of directories
+	-v, --version
+		Prints installed version
+```
 
-    --help
-        Prints a usage statement
+## Gradually fix legacy code
 
-    -f format, --format format (default: text)
-        Output format. Accepts "text", "html", "json", "csv" and "xml" formats.
+If you have a huge base of legacy code, it's really hard to fix all code issues
+at the same time, in a single commit.
 
-    -i <directory>, --ignore <directory>
-        Ignore a comma-separated list of directories. Directories called
-        "vendor", "tests", "features" and "spec", will be ignored by default.
+PHP Hound helps you to gradually fix your code by only warning about issues
+found in the files and lines touched by a branch or commit. All other files
+or lines will be ignored.
 
-    -v, --version
-        Prints installed version
+That's pretty easy to achieve:
+
+```bash
+# Usage:
+# php-hound --git-diff <commits or branches to compare> <target directory>
+
+# Only return issues found on lines and files changed on the "windows10" branch:
+php-hound --git-diff master..windows10 /path/to/git/repo
+
+# Only return issues found on lines and files changed between two commits
+php-hound --git-diff b28a1df..4fff883 /path/to/git/repo
 ```
