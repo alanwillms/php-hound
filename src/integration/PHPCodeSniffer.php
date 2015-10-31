@@ -33,11 +33,11 @@ class PHPCodeSniffer extends AbstractIntegration
     /**
      * @inheritdoc
      */
-    public function getCommand($targetPath)
+    public function getCommand($targetPaths)
     {
         return $this->binariesPath . 'phpcs -p --standard=PSR2 --report=xml '
             . $this->getIgnoredArgument() . '--report-file="'
-            . $this->temporaryFilePath . '" '. $targetPath;
+            . $this->temporaryFilePath . '" ' . implode(' ', $targetPaths);
     }
 
     /**

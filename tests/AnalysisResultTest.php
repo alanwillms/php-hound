@@ -2,6 +2,7 @@
 namespace tests;
 
 use phphound\AnalysisResult;
+use phphound\output\filter\OutputFilterInterface;
 
 class AnalysisResultTest extends \PHPUnit_Framework_TestCase
 {
@@ -115,5 +116,37 @@ class AnalysisResultTest extends \PHPUnit_Framework_TestCase
             ],
             $anaysisResult1->toArray()
         );
+    }
+
+    /** @test **/
+    function it_filter_results()
+    {
+        $anaysisResult = new AnalysisResult;
+        $files = ['Z.php', 'A.php'];
+        $lines = [31, 56, 11];
+
+        foreach ($files as $file) {
+            foreach ($lines as $line) {
+                $anaysisResult->addIssue(
+                    $file,
+                    $line,
+                    'PHP-Hound',
+                    'error',
+                    'Error'
+                );
+            }
+        }
+
+        $filter = new FakeFilter;
+        $anaysisResult->setResultsFilter($filter);
+        $this->assertEquals(['filtered', 'data'], $anaysisResult->toArray());
+    }
+}
+
+class FakeFilter implements OutputFilterInterface
+{
+    public function filter($data)
+    {
+        return ['filtered', 'data'];
     }
 }

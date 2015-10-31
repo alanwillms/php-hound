@@ -33,9 +33,10 @@ class PHPCopyPasteDetector extends AbstractIntegration
     /**
      * @inheritdoc
      */
-    public function getCommand($targetPath)
+    public function getCommand($targetPaths)
     {
-        return $this->binariesPath . 'phpcpd ' . $targetPath . ' '
+        return $this->binariesPath . 'phpcpd '
+            . implode(' ', $targetPaths) . ' '
             . $this->getIgnoredArgument() . '--log-pmd="'
             . $this->temporaryFilePath . '"';
     }

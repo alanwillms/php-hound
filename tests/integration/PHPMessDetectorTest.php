@@ -23,7 +23,7 @@ class PHPMessDetectorTest extends \PHPUnit_Framework_TestCase
         $integration = new PHPMessDetector($this->binariesPath, $this->binariesPath);
         $this->assertContains(
             'phpmd target.php xml cleancode,codesize,controversial,design,naming,unusedcode',
-            $integration->getCommand('target.php')
+            $integration->getCommand(['target.php'])
         );
     }
 
@@ -34,7 +34,7 @@ class PHPMessDetectorTest extends \PHPUnit_Framework_TestCase
         $integration->setIgnoredPaths(['dir1', 'dir2']);
         $this->assertContains(
             '--exclude dir1,dir2',
-            $integration->getCommand('target.php')
+            $integration->getCommand(['target.php'])
         );
     }
 
@@ -60,7 +60,7 @@ EOT;
             [$this->binariesPath, $this->binariesPath]
         );
         $integration->expects($this->any())->method('getOutputContent')->willReturn($xml);
-        $integration->run('target.php');
+        $integration->run(['target.php']);
 
         $this->assertEquals(
             [

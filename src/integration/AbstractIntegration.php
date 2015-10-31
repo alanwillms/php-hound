@@ -67,23 +67,23 @@ abstract class AbstractIntegration
 
     /**
      * Creates and execute tool command, returning output results.
-     * @param string $targetPath file/directory path to be analysed.
+     * @param string[] $targetPaths file/directory paths to be analysed.
      * @return string CLI JSON output.
      */
-    public function run($targetPath)
+    public function run($targetPaths)
     {
-        $this->executeCommand($targetPath);
+        $this->executeCommand($targetPaths);
         $this->processResults();
     }
 
     /**
      * Prepare and execute command.
-     * @param string $targetPath file/directory path to be analysed.
+     * @param string[] $targetPaths file/directory paths to be analysed.
      * @return void
      */
-    protected function executeCommand($targetPath)
+    protected function executeCommand($targetPaths)
     {
-        exec($this->getCommand($targetPath));
+        exec($this->getCommand($targetPaths));
     }
 
     /**
@@ -118,10 +118,10 @@ abstract class AbstractIntegration
 
     /**
      * Create integration command to be run on the shell.
-     * @param string $targetPath file/directory path to be analysed.
+     * @param string[] $targetPaths file/directory paths to be analysed.
      * @return string shell command.
      */
-    abstract public function getCommand($targetPath);
+    abstract public function getCommand($targetPaths);
 
     /**
      * Read issues from the XML output.

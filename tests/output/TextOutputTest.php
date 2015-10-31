@@ -10,7 +10,7 @@ class TextOutputTest extends \PHPUnit_Framework_TestCase
     public function it_outputs_results_correctly()
     {
         $cli = $this->getMockBuilder('League\CLImate\CLImate')
-            ->setMethods(['yellowFlank'])
+            ->setMethods(['yellowFlank', 'cyanInline', 'br'])
             ->getMock()
         ;
         $result = $this->getMock('phphound\AnalysisResult');
