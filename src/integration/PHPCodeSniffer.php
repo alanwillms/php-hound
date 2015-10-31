@@ -37,7 +37,7 @@ class PHPCodeSniffer extends AbstractIntegration
     {
         return $this->binariesPath . 'phpcs -p --standard=PSR2 --report=xml '
             . $this->getIgnoredArgument() . '--report-file="'
-            . $this->temporaryFilePath . '" '. implode(' ', $targetPaths);
+            . $this->temporaryFilePath . '" ' . implode(' ', $targetPaths);
     }
 
     /**

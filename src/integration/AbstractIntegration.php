@@ -118,10 +118,10 @@ abstract class AbstractIntegration
 
     /**
      * Create integration command to be run on the shell.
-     * @param string $targetPath file/directory path to be analysed.
+     * @param string[] $targetPaths file/directory paths to be analysed.
      * @return string shell command.
      */
-    abstract public function getCommand($targetPath);
+    abstract public function getCommand($targetPaths);
 
     /**
      * Read issues from the XML output.

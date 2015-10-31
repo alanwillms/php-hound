@@ -171,7 +171,7 @@ class Command
                 'prefix' => 'g',
                 'longPrefix' => 'git-diff',
                 'description' => 'Limit to files and lines changed between two '
-                               . 'commits or branches, e.g., "master..other".',
+                                . 'commits or branches, e.g., "master..other".',
                 'castTo' => 'string',
             ],
             'path' => [

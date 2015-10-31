@@ -19,14 +19,14 @@ class DiffOutputFilter implements OutputFilterInterface
 
     /**
      * An array of Diff objects.
-     * @var SebastianBergmann\Diff\Diff diff object.
+     * @var SebastianBergmann\Diff\Diff[] array of diff objects.
      */
     protected $diffs;
 
     /**
      * Constructor.
      * @param string $root root path.
-     * @param SebastianBergmann\Diff\Diff[] $diff array of diff objects.
+     * @param SebastianBergmann\Diff\Diff[] $diffs array of diff objects.
      */
     public function __construct($root, array $diffs)
     {
