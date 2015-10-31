@@ -3,10 +3,13 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
+Nothing yet.
+
+## 0.7.0 - 2015-10-31 🎃
 ### Added
 - Add `git-diff` option for limiting results to files and lines touched
   between two commits or branches.
-- Output a list of the ignored paths. By @GuidoBR
+- Output a list of the ignored paths. By [GuidoBR][GuidoBR].
 
 ### Changed
 - Extracts an `Analyser` class from `Command`.
@@ -53,3 +56,5 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## 0.1.0 - 2015-08-07
 ### Added
 - Script for running PHPCS, PHPMD and PHPCPD one after another
+
+[GuidoBR]: https://github.com/GuidoBR
