@@ -47,6 +47,15 @@ class AnalysisResult
     }
 
     /**
+     * Check if there are any code issues.
+     * @return boolean true if there are issues.
+     */
+    public function hasIssues()
+    {
+        return !empty($this->toArray());
+    }
+
+    /**
      * Return result data as an array.
      * <code>
      * file_name => [

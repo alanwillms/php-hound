@@ -16,4 +16,9 @@ foreach ($composerAutoload as $autoload) {
 
 $cliMate = new \League\CLImate\CLImate;
 $hound = new \phphound\Command($cliMate, $binariesPath, $_SERVER['argv']);
-$hound->run();
+if ($hound->run()) {
+    // No issues found
+    exit(0);
+}
+// Issues found
+exit(1);

@@ -64,18 +64,18 @@ class Command
 
     /**
      * Run PHP-Hound command.
-     * @return null
+     * @return boolean true if it didn't find code issues or ran successfully.
      */
     public function run()
     {
         if ($this->hasArgumentValue('help')) {
             $this->cli->usage();
-            return;
+            return true;
         }
 
         if ($this->hasArgumentValue('version')) {
             $this->cli->out($this->getDescription());
-            return;
+            return true;
         }
 
         if ($this->hasArgumentValue('git-diff')) {
@@ -84,7 +84,7 @@ class Command
             $this->getAnalyser()->setResultsFilter($filter);
         }
 
-        $this->getAnalyser()->run();
+        return $this->getAnalyser()->run();
     }
 
     /**

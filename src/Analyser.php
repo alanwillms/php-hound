@@ -15,7 +15,7 @@ class Analyser
     const EVENT_FINISHED_TOOL = 2;
     const EVENT_FINISHED_ANALYSIS = 3;
 
-    const VERSION = '0.7.0';
+    const VERSION = '0.7.1';
 
     /**
      * Composer binaries path.
@@ -64,7 +64,7 @@ class Analyser
 
     /**
      * Run each configured PHP analysis tool.
-     * @return void
+     * @return boolean true if it didn't find code issues.
      */
     public function run()
     {
@@ -88,6 +88,8 @@ class Analyser
 
         $this->output->result($result);
         $this->trigger(self::EVENT_FINISHED_ANALYSIS);
+
+        return !$result->hasIssues();
     }
 
     /**
