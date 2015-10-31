@@ -47,6 +47,17 @@ class AnalysisResult
     }
 
     /**
+     * Check if there are any code issues.
+     * @return boolean true if there are issues.
+     */
+    public function hasIssues()
+    {
+        // Required by PHP 5.4
+        $array = $this->toArray();
+        return !empty($array);
+    }
+
+    /**
      * Return result data as an array.
      * <code>
      * file_name => [

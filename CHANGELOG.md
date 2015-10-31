@@ -5,7 +5,17 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 Nothing yet.
 
-## 0.7.0 - 2015-10-31 🎃
+## 0.7.1 - 2015-10-31
+### Changed
+- Now `php-hound` command return correct exit codes (0 = success, 1 = failure).
+
+### Fixed
+- If you use `git-diff`, it will only run tests over files referenced in the
+  diff.
+
+## 0.7.0 - 2015-10-31
+🎃
+
 ### Added
 - Add `git-diff` option for limiting results to files and lines touched
   between two commits or branches.
