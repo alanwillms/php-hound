@@ -76,35 +76,53 @@ class CommandTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_limit_results_by_a_git_diff()
     {
-        // $arguments = ['php-hound', '--git-diff=master..branch'];
-        // $cli = $this->getCliMock();
-        // $command = $this->getMockBuilder(
-        //         'phphound\Command',
-        //         ['getAnalyser']
-        //     )
-        //     ->disableOriginalConstructor()
-        //     ->getMock()
-        // ;
-        // $analyser = $this
-        //     ->getMockBuilder('phphound\Analyser', ['setResultsFilter'])
-        //     ->disableOriginalConstructor()
-        //     ->getMock()
-        // ;
-        // $command
-        //     ->method('getAnalyser')
-        //     ->willReturn($analyser)
-        // ;
-        // $command
-        //     ->expects($this->any())
-        //     ->method('hasArgumentValue')
-        //     ->with('git-diff')
-        //     ->willReturn(true)
-        // ;
-        // $analyser
-        //     ->expects($this->once())
-        //     ->method('setResultsFilter')
-        // ;
-        // $command->run();
+        $arguments = ['php-hound', '--git-diff=master..branch'];
+        $cli = $this->getCliMock();
+        $analyser = $this
+            ->getMockBuilder('phphound\Analyser', ['setResultsFilter'])
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+        $analyser
+            ->expects($this->once())
+            ->method('setResultsFilter')
+        ;
+        $command = $this->getMockBuilder('phphound\Command')
+            ->setMethods(['getAnalyser'])
+            ->setConstructorArgs([$cli, $this->binariesPath, $arguments])
+            ->getMock()
+        ;
+        $command
+            ->method('getAnalyser')
+            ->willReturn($analyser)
+        ;
+        $command->run();
+    }
+
+    /** @test */
+    public function it_limit_results_by_a_git_diff_with_a_file_target()
+    {
+        $arguments = ['php-hound', '--git-diff=master..branch', 'file.php'];
+        $cli = $this->getCliMock();
+        $analyser = $this
+            ->getMockBuilder('phphound\Analyser', ['setResultsFilter'])
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+        $analyser
+            ->expects($this->once())
+            ->method('setResultsFilter')
+        ;
+        $command = $this->getMockBuilder('phphound\Command')
+            ->setMethods(['getAnalyser'])
+            ->setConstructorArgs([$cli, $this->binariesPath, $arguments])
+            ->getMock()
+        ;
+        $command
+            ->method('getAnalyser')
+            ->willReturn($analyser)
+        ;
+        $command->run();
     }
 
     /** @test */
@@ -190,6 +208,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $arguments = ['php-hound', '--format=invalid'];
         $cli = $this->getCliMock();
         $command = new Command($cli, $this->binariesPath, $arguments);
+        $command->run();
     }
 
     /** @test */

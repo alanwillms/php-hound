@@ -67,38 +67,32 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
     /** @test **/
     public function it_delegates_results_filter_to_analysis_result()
     {
-        // $filter = new DiffOutputFilter('', []);
-        // $result = $this->getMock('phphound\AnalysisResult', null);
-        // $result->expects($this->once())->method('setResultsFilter')->with($filter);
-        //
-        // $analyser = $this
-        //     ->getMockBuilder('phphound\Analyser')
-        //     ->setMethods(['getAnalysisTools'])
-        //     ->setConstructorArgs([
-        //         $this->output,
-        //         $this->binariesPath,
-        //         '.',
-        //         []
-        //     ])
-        //     ->getMock()
-        // ;
-        // $tool = $this
-        //     ->getMockBuilder('phphound\integration\PHPCodeSniffer')
-        //     ->disableOriginalConstructor()
-        //     ->getMock()
-        // ;
-        // $analyser
-        //     ->expects($this->once())
-        //     ->method('getAnalysisTools')
-        //     ->willReturn([$tool])
-        // ;
-        // $tool
-        //     ->method('run')
-        //     ->willReturn(new AnalysisResult)
-        // ;
-        // $tool->method('getAnalysisResult')->willReturn($result);
-        //
-        // $analyser->setResultsFilter($filter);
-        // $analyser->run();
+        $filter = new DiffOutputFilter('', []);
+        $result = $this->getMock('phphound\AnalysisResult', ['setResultsFilter']);
+        $result->expects($this->once())->method('setResultsFilter')->with($filter);
+
+        $analyser = $this
+            ->getMockBuilder('phphound\Analyser')
+            ->setMethods(['getAnalysisTools', 'createResult'])
+            ->setConstructorArgs([
+                $this->output,
+                $this->binariesPath,
+                '.',
+                []
+            ])
+            ->getMock()
+        ;
+        $analyser
+            ->expects($this->once())
+            ->method('getAnalysisTools')
+            ->willReturn([])
+        ;
+        $analyser
+            ->expects($this->once())
+            ->method('createResult')
+            ->willReturn($result)
+        ;
+        $analyser->setResultsFilter($filter);
+        $analyser->run();
     }
 }

@@ -39,6 +39,12 @@ class Command
     protected $analysedPaths;
 
     /**
+     * Composer binaries directory path.
+     * @var string directory path.
+     */
+    protected $binariesPath;
+
+    /**
      * Set dependencies and initialize CLI.
      * @param CLImate $climate CLImate instance.
      * @param string $binariesPath Composer binaries path.
@@ -52,15 +58,8 @@ class Command
         $this->cli->arguments->parse($arguments);
 
         $this->arguments = $arguments;
-
+        $this->binariesPath = $binariesPath;
         $this->setAnalysedPathsFromString($this->getArgumentValue('path'));
-
-        $this->analyser = new Analyser(
-            $this->getOutput(),
-            $binariesPath,
-            $this->getAnalysedPaths(),
-            $this->getIgnoredPaths()
-        );
     }
 
     /**
@@ -252,6 +251,14 @@ class Command
      */
     public function getAnalyser()
     {
+        if (null === $this->analyser) {
+            $this->analyser = new Analyser(
+                $this->getOutput(),
+                $this->binariesPath,
+                $this->getAnalysedPaths(),
+                $this->getIgnoredPaths()
+            );
+        }
         return $this->analyser;
     }
 

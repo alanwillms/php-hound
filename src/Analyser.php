@@ -68,7 +68,7 @@ class Analyser
      */
     public function run()
     {
-        $result = new AnalysisResult;
+        $result = $this->createResult();
         $this->trigger(
             self::EVENT_STARTING_ANALYSIS,
             ['ignoredPaths' => $this->ignoredPaths]
@@ -158,5 +158,14 @@ class Analyser
         }
 
         return $objects;
+    }
+
+    /**
+     * Create an empty analysis result.
+     * @return AnalysisResult instance.
+     */
+    protected function createResult()
+    {
+        return new AnalysisResult;
     }
 }
