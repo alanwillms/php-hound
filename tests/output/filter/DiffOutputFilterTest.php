@@ -22,6 +22,41 @@ class DiffOutputFilterTest extends \PHPUnit_Framework_TestCase
             ],
         ];
 
+        $diff = $this->getDiff();
+        $parser = new Parser;
+        $filter = new DiffOutputFilter('/path', $parser->parse($diff));
+
+        $this->assertEquals(
+            [
+                '/path/file_a.php' => [
+                    2 => 'issues for a.2',
+                ],
+                '/path/file_b.php' => [
+                    10 => 'issues for b.10',
+                ],
+            ],
+            $filter->filter($data)
+        );
+    }
+    /** @test **/
+    function it_gets_files_with_added_code()
+    {
+        $diff = $this->getDiff();
+        $parser = new Parser;
+        $filter = new DiffOutputFilter('/path', $parser->parse($diff));
+
+        $this->assertEquals(
+            [
+                '/path/file_a.php',
+                '/path/file_b.php',
+                '/path/file_c.php',
+            ],
+            $filter->getFilesWithAddedCode()
+        );
+    }
+
+    protected function getDiff()
+    {
         $diff = <<<EOT
 diff --git a/file_a.php b/file_a.php
 index 00935f1..e767aff 100644
@@ -59,20 +94,6 @@ index 0000000..c82de6a
 +Line 1
 +Line 2
 EOT;
-
-        $parser = new Parser;
-        $filter = new DiffOutputFilter('/path', $parser->parse($diff));
-
-        $this->assertEquals(
-            [
-                '/path/file_a.php' => [
-                    2 => 'issues for a.2',
-                ],
-                '/path/file_b.php' => [
-                    10 => 'issues for b.10',
-                ],
-            ],
-            $filter->filter($data)
-        );
+        return $diff;
     }
 }

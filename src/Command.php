@@ -81,7 +81,10 @@ class Command
         if ($this->hasArgumentValue('git-diff')) {
             $gitDiff = $this->getArgumentValue('git-diff');
             $filter = $this->getGitDiffFilter($gitDiff);
+            $analysedFiles = $filter->getFilesWithAddedCode();
+            $this->setAnalysedPaths($analysedFiles);
             $this->getAnalyser()->setResultsFilter($filter);
+            $this->getAnalyser()->setAnalysedPaths($analysedFiles);
         }
 
         return $this->getAnalyser()->run();
@@ -200,13 +203,23 @@ class Command
     {
         $rawAnalysedPaths = explode(',', $pathsString);
         $analysedPaths = array_filter($rawAnalysedPaths);
-        foreach ($analysedPaths as &$path) {
+        $this->setAnalysedPaths(array_filter($rawAnalysedPaths));
+    }
+
+    /**
+     * Set target files and/or directories to be analysed. Fix relative paths.
+     * @param string[] $paths target paths.
+     * @return void
+     */
+    protected function setAnalysedPaths(array $paths)
+    {
+        foreach ($paths as &$path) {
             if (0 === strpos($path, DIRECTORY_SEPARATOR)) {
                 continue;
             }
             $path = $this->getWorkingDirectory() . DIRECTORY_SEPARATOR . $path;
         }
-        $this->analysedPaths = $analysedPaths;
+        $this->analysedPaths = $paths;
     }
 
     /**

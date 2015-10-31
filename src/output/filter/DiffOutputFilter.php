@@ -59,13 +59,26 @@ class DiffOutputFilter implements OutputFilterInterface
     }
 
     /**
+     * Files touched by the diff and that received at least one new line of code.
+     * @return string[] files paths.
+     */
+    public function getFilesWithAddedCode()
+    {
+        $files = [];
+        foreach ($this->getDiffsWithAddedCode() as $fileDiff) {
+            $files[] = $this->root . DIRECTORY_SEPARATOR . substr($fileDiff->getTo(), 2);
+        }
+        return $files;
+    }
+
+    /**
      * Gets the list of files and lines touched by the diff.
      * @return array where the key is the file path and its values the lines.
      */
     protected function getTouchedFilesAndLines()
     {
         $resultFilter = [];
-        foreach ($this->diffs as $fileDiff) {
+        foreach ($this->getDiffsWithAddedCode() as $fileDiff) {
             $file = $this->root . DIRECTORY_SEPARATOR . substr($fileDiff->getTo(), 2);
             $lines = [];
             foreach ($fileDiff->getChunks() as $chunkDiff) {
@@ -85,5 +98,25 @@ class DiffOutputFilter implements OutputFilterInterface
             $resultFilter[$file] = $lines;
         }
         return $resultFilter;
+    }
+
+    /**
+     * Search for diffs where at least one line of code was added.
+     * @return SebastianBergmann\Diff\Diff[] diffs adding code.
+     */
+    protected function getDiffsWithAddedCode()
+    {
+        $diffs = [];
+        foreach ($this->diffs as $fileDiff) {
+            foreach ($fileDiff->getChunks() as $chunkDiff) {
+                foreach ($chunkDiff->getLines() as $lineDiff) {
+                    if ($lineDiff->getType() == Line::ADDED) {
+                        $diffs[] = $fileDiff;
+                        break 2;
+                    }
+                }
+            }
+        }
+        return $diffs;
     }
 }

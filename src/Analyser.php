@@ -133,6 +133,16 @@ class Analyser
     }
 
     /**
+     * Set target files and/or directories to be analysed.
+     * @param string[] $paths target paths.
+     * @return void
+     */
+    public function setAnalysedPaths(array $paths)
+    {
+        $this->analysedPaths = $paths;
+    }
+
+    /**
      * List of PHP analys integration classes.
      * @return string[] array of class names.
      */

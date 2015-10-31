@@ -52,7 +52,9 @@ class AnalysisResult
      */
     public function hasIssues()
     {
-        return !empty($this->toArray());
+        // Required by PHP 5.4
+        $array = $this->toArray();
+        return !empty($array);
     }
 
     /**

@@ -95,4 +95,44 @@ class AnalyserTest extends \PHPUnit_Framework_TestCase
         $analyser->setResultsFilter($filter);
         $analyser->run();
     }
+
+    /** @test */
+    public function it_sets_analysed_paths()
+    {
+        $analyser = $this
+            ->getMockBuilder('phphound\Analyser')
+            ->setMethods(['getAnalysisTools'])
+            ->setConstructorArgs([
+                $this->output,
+                $this->binariesPath,
+                '.',
+                []
+            ])
+            ->getMock()
+        ;
+        $tool = $this
+            ->getMockBuilder('phphound\integration\PHPCodeSniffer')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        $analyser
+            ->expects($this->once())
+            ->method('getAnalysisTools')
+            ->willReturn([$tool])
+        ;
+        $tool
+            ->expects($this->once())
+            ->method('run')
+            ->with(['/new/path.php'])
+            ->willReturn(new AnalysisResult)
+        ;
+        $tool
+            ->method('getAnalysisResult')
+            ->willReturn(new AnalysisResult)
+        ;
+
+        $analyser->setAnalysedPaths(['/new/path.php']);
+        $analyser->run();
+    }
 }
