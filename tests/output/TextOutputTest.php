@@ -22,7 +22,7 @@ class TextOutputTest extends \PHPUnit_Framework_TestCase
             ],
         ]);
 
-        $cli->expects($this->any())->method('yellowFlank')->with('File.php', '=', 2);
+        $cli->expects($this->any())->method('yellowFlank')->with('File.php (1 issue)', '=', 2);
         $cli->expects($this->any())->method('cyanInline')->with('93: ');
         $cli->expects($this->any())->method('inline')->with('Error trimmed');
 
