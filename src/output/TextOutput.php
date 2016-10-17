@@ -14,7 +14,16 @@ class TextOutput extends AbstractOutput implements TriggerableInterface
     {
         foreach ($result->toArray() as $fileName => $lines) {
             $this->cli->br();
-            $this->cli->yellowFlank($fileName, '=', 2);
+
+            $issuesCount = $this->countIssues($lines);
+            $issues = '(1 issue)';
+
+            if ($issuesCount > 1) {
+                $issues = '(' . $issuesCount . ' issues)';
+            }
+
+            $this->cli->yellowFlank($fileName . ' ' . $issues, '=', 2);
+
             foreach ($lines as $line => $issues) {
                 foreach ($issues as $issue) {
                     $this->cli->cyan()->inline($line . ': ');
@@ -23,5 +32,23 @@ class TextOutput extends AbstractOutput implements TriggerableInterface
                 }
             }
         }
+    }
+
+    /**
+     * Count number of issues for a given file
+     * @param array[] $file
+     * @return integer number of issues in all lines
+     */
+    private function countIssues($file)
+    {
+        $counter = 0;
+
+        foreach ($file as $line => $issues) {
+            foreach ($issues as $issue) {
+                $counter++;
+            }
+        }
+
+        return $counter;
     }
 }
